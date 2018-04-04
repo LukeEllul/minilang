@@ -92,11 +92,11 @@ map<char, TokenType> *ClassifierTable = new map<char, TokenType>(
     }
 );
 
-int main()
-{
-    for (auto it = ClassifierTable->begin(); it != ClassifierTable->end(); ++it)
-      cout << it->first << " = " << it->second << endl;
+// int main()
+// {
+//     for (auto it = ClassifierTable->begin(); it != ClassifierTable->end(); ++it)
+//       cout << it->first << " = " << it->second << endl;
 
-   return 0;
+//    return 0;
 
-}
+// }
