@@ -35,7 +35,14 @@ enum TokenType {
     FUNCTION_DECL,
     STATEMENT,
     BLOCK,
-    PROGRAM
+    PROGRAM,
+
+    LEFT_BRACKET,
+    RIGHT_BRACKET,
+    COLON,
+    SEMI_COLON,
+    COMMA,
+    EQUALS
 };
 
 typedef struct 
