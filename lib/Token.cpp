@@ -5,6 +5,10 @@ using namespace std;
 enum TokenType {
     TOK_Number,
     TOK_ArithmeticOP,
+    TOK_BOOLEAN,
+    TOK_ALPHA_SMALL,
+    TOK_ALPHA_LARGE,
+    TOK_PUNC,
     TOK_EOF
 };
 
