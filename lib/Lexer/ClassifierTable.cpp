@@ -85,9 +85,12 @@ map<char, TokenType> *ClassifierTable = new map<char, TokenType>(
         {')', RIGHT_BRACKET},
 
         {',', COMMA},
+        {'.', PERIOD},
         {'=', EQUALS},
         {':', COLON},
         {'_', UNDERSCORE},
+        {'!', EXCLAMATION_MARK},
+        {'"', INVERTED_COMMA},
 
         {EOF, TOK_EOF}
     }

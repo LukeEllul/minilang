@@ -2,9 +2,8 @@
 
 using namespace std;
 
-enum TokenType {
-    INVALID,
-    
+enum TokenType
+{
     LETTER,
     DIGIT,
     PRINTABLE,
@@ -15,9 +14,12 @@ enum TokenType {
     RIGHT_BRACKET,
     COLON,
     SEMI_COLON,
+    PERIOD,
     COMMA,
     EQUALS,
     UNDERSCORE,
+    EXCLAMATION_MARK,
+    INVERTED_COMMA,
     TOK_EOF,
     TYPE,
     BOOLEAN_LITERAL,
@@ -45,10 +47,12 @@ enum TokenType {
     FUNCTION_DECL,
     STATEMENT,
     BLOCK,
-    PROGRAM
+    PROGRAM,
+
+    INVALID,
 };
 
-typedef struct 
+typedef struct
 {
     char const *name;
     TokenType type;
