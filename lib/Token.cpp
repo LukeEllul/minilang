@@ -3,9 +3,22 @@
 using namespace std;
 
 enum TokenType {
+    INVALID,
+    
     LETTER,
     DIGIT,
     PRINTABLE,
+    MULTIPLICATIVE_OP,
+    ADDITIVE_OP,
+    RELATIONAL_OP,
+    LEFT_BRACKET,
+    RIGHT_BRACKET,
+    COLON,
+    SEMI_COLON,
+    COMMA,
+    EQUALS,
+    UNDERSCORE,
+    TOK_EOF,
     TYPE,
     BOOLEAN_LITERAL,
     INTEGER_LITERAL,
@@ -13,9 +26,6 @@ enum TokenType {
     STRING_LITERAL,
     LITERAL,
     IDENTIFIER,
-    MULTIPLICATIVE_OP,
-    ADDITIVE_OP,
-    RELATIONAL_OP,
     ACTUAL_PARAMS,
     FUNCTION_CALL,
     SUB_EXPRESSION,
@@ -35,14 +45,7 @@ enum TokenType {
     FUNCTION_DECL,
     STATEMENT,
     BLOCK,
-    PROGRAM,
-
-    LEFT_BRACKET,
-    RIGHT_BRACKET,
-    COLON,
-    SEMI_COLON,
-    COMMA,
-    EQUALS
+    PROGRAM
 };
 
 typedef struct 

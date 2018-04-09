@@ -72,8 +72,6 @@ map<char, TokenType> *ClassifierTable = new map<char, TokenType>(
         {'Y', LETTER},
         {'Z', LETTER},
 
-        {'_', IDENTIFIER},
-
         {'*', MULTIPLICATIVE_OP},
         {'/', MULTIPLICATIVE_OP},
 
@@ -88,7 +86,10 @@ map<char, TokenType> *ClassifierTable = new map<char, TokenType>(
 
         {',', COMMA},
         {'=', EQUALS},
-        {':', COLON}
+        {':', COLON},
+        {'_', UNDERSCORE},
+
+        {EOF, TOK_EOF}
     }
 );
 

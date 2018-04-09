@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../Token.cpp"
 
+//states
 TokenType const TokenTypeTable[] = {
     LETTER,
     DIGIT,
