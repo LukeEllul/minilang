@@ -40,7 +40,7 @@ char Lexer::NextChar()
 
 Token *Lexer::NextToken()
 {
-    TokenType state = (TokenType)NULL;
+    TokenType state = (TokenType)(-1);
     string *lexeme = new string();
 
 
@@ -51,5 +51,38 @@ Token *Lexer::NextToken()
     {
         char ch = this->NextChar();
         *lexeme += ch;
+
+        if(finalStates[state] == state)
+        {
+            states->empty();
+        }
+
+        states->push((TokenType)state);
+        TokenType cat = ClassifierTableX->at(ch);
+        state = TransitionTable[state + 1][cat];
+    }
+
+    while(finalStates[state] != state && state != BAD)
+    {
+        state = states->top();
+        states->pop();
+        lexeme->pop_back();
+    }
+
+    if(finalStates[state] == state)
+    {
+        Token *token = new Token();
+        token->type = state;
+        token->value = lexeme;
+
+        return token;
+    }
+    else 
+    {
+        Token *token = new Token();
+        token->type = (TokenType)INVALID;
+        token->value = lexeme;
+
+        return token;
     }
 }
