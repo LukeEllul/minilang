@@ -5,7 +5,7 @@
 
 using namespace std;
 
-map<char, TokenType> *ClassifierTable = new map<char, TokenType>(
+map<char, TokenType> *ClassifierTableX = new map<char, TokenType>(
     {
         {'1', DIGIT},
         {'2', DIGIT},

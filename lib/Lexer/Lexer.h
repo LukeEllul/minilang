@@ -12,9 +12,9 @@ class Lexer
         int currentPosition;
 
         char NextChar();
-        string *NextWord();
-        map<char,char const*> *ClassifierTable;
-        map<int,char const*> *TransitionTable;
+        map<char,TokenType> *ClassifierTable;
+        TokenType const *TokenTypeTable;
+        TokenType const (*TransitionTable)[17];
 
     public:
         Token *NextToken();

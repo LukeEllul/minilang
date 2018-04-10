@@ -1,12 +1,29 @@
 #include <iostream>
 #include "../Token.cpp"
 
+using namespace std;
+
 //states
-TokenType const TokenTypeTable[] = {
+TokenType const *TokenTypeTableX = {
     LETTER,
     DIGIT,
     PRINTABLE,
+    MULTIPLICATIVE_OP,
+    ADDITIVE_OP,
     RELATIONAL_OP,
+    LEFT_BRACKET,
+    RIGHT_BRACKET,
+    COLON,
+    SEMI_COLON,
+    PERIOD,
+    COMMA,
+    EQUALS,
+    UNDERSCORE,
+    EXCLAMATION_MARK,
+    INVERTED_COMMA,
+    TOK_EOF,
+    TYPE,
+    BOOLEAN_LITERAL,
     INTEGER_LITERAL,
     REAL_LITERAL,
     STRING_LITERAL,
@@ -31,5 +48,32 @@ TokenType const TokenTypeTable[] = {
     FUNCTION_DECL,
     STATEMENT,
     BLOCK,
-    PROGRAM
-};
+    PROGRAM};
+
+//final states
+TokenType const *finalStates = {
+    LETTER,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    RELATIONAL_OP,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    INTEGER_LITERAL,
+    REAL_LITERAL,
+    STRING_LITERAL,
+    LITERAL,
+    IDENTIFIER,
+}

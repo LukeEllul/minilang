@@ -50,6 +50,7 @@ enum TokenType
     PROGRAM,
 
     INVALID,
+    BAD
 };
 
 typedef struct
