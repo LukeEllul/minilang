@@ -1,10 +1,11 @@
-#include <iostream>
-#include "../Token.cpp"
+#ifndef TOKEN_H
+#define TOKEN_H
+#include <string>
 
 using namespace std;
 
-//states
-TokenType const *TokenTypeTableX = {
+enum TokenType
+{
     LETTER,
     DIGIT,
     PRINTABLE,
@@ -29,8 +30,8 @@ TokenType const *TokenTypeTableX = {
     STRING_LITERAL,
     LITERAL,
     IDENTIFIER,
-
-    //transition table conmments start here
+    ACTUAL_PARAMS,
+    FUNCTION_CALL,
     SUB_EXPRESSION,
     UNARY,
     FACTOR,
@@ -48,32 +49,18 @@ TokenType const *TokenTypeTableX = {
     FUNCTION_DECL,
     STATEMENT,
     BLOCK,
-    PROGRAM};
+    PROGRAM,
 
-//final states
-TokenType const *finalStates = {
-    LETTER,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    RELATIONAL_OP,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    INTEGER_LITERAL,
-    REAL_LITERAL,
-    STRING_LITERAL,
-    LITERAL,
-    IDENTIFIER,
-}
+    INVALID,
+    BAD
+};
+
+typedef struct
+{
+    char const *name;
+    TokenType type;
+    int location[2];
+    string *value;
+} Token;
+
+#endif

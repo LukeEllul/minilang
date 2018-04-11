@@ -1,6 +1,8 @@
+#ifndef LEXER_H
+#define LEXER_H
 #include <string>
 #include <map>
-#include "../Token.cpp"
+#include "../Token.h"
 
 using namespace std;
 
@@ -18,6 +20,8 @@ class Lexer
 
     public:
         Token *NextToken();
-        Lexer(string *filePath);
+        Lexer(const char *filePath);
         ~Lexer();
 };
+
+#endif

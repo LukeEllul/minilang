@@ -1,29 +1,30 @@
+#include <iostream>
 #include <string>
 #include <map>
 #include <fstream>
 #include <stack>
-#include "../Token.cpp"
+#include "../Token.h"
 #include "Lexer.h"
 
-#include "ClassifierTable.cpp"
-#include "TokenTypeTable.cpp"
-#include "TransitionTable.cpp"
+#include "ClassifierTable.h"
+#include "TokenTypeTable.h"
+#include "TransitionTable.h"
 
 using namespace std;
 
-Lexer::Lexer(string *fileName)
+Lexer::Lexer(const char *fileName)
 {
     string *inputString = new string();
 
     char c;
-    fstream fin(fileName->c_str(), fstream::in);
+    fstream fin(fileName, fstream::in);
     while(fin.get(c))
     {
         *inputString += c;
     }
 
     this->inputString = inputString;
-    this->currentChar = NULL;
+    this->currentChar = ' ';
     this->currentPosition = 0;
 
     this->ClassifierTable = ClassifierTableX;
@@ -62,11 +63,17 @@ Token *Lexer::NextToken()
         state = TransitionTable[state + 1][cat];
     }
 
-    while(finalStates[state] != state && state != BAD)
+    // for (stack<TokenType> dump = *states; !dump.empty(); dump.pop())
+    //     cout << dump.top() << endl;
+
+    //cout << finalStates[32] << endl;
+
+    while((finalStates[state] != state || finalStates[state] == INVALID) && state != BAD)
     {
         state = states->top();
         states->pop();
         lexeme->pop_back();
+        this->currentPosition--;
     }
 
     if(finalStates[state] == state)
