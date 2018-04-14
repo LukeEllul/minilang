@@ -2,56 +2,220 @@
 #define TRANSITION_TABLE
 #include "../Token.h"
 
-const TokenType TransitionTable[][17] = {
-    /*START TODO*/ {(TokenType)LETTER, (TokenType)INTEGER_LITERAL, (TokenType)INVALID, (TokenType)MULTIPLICATIVE_OP, (TokenType)ADDITIVE_OP, (TokenType)RELATIONAL_OP, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)RELATIONAL_OP, (TokenType)IDENTIFIER, (TokenType)RELATIONAL_OP, (TokenType)STRING_LITERAL, (TokenType)INVALID},
+const TokenType TransitionTable[][19] = {
+    /*START TODO*/ {
+        (TokenType)LETTER, 
+        (TokenType)INTEGER_LITERAL, 
+        (TokenType)WHITE_SPACE, 
+        (TokenType)MULTIPLICATIVE_OP, 
+        (TokenType)ADDITIVE_OP, 
+        (TokenType)RELATIONAL_OP, 
+        (TokenType)LEFT_BRACKET, 
+        (TokenType)RIGHT_BRACKET, 
+        (TokenType)INVALID, 
+        (TokenType)SEMI_COLON, 
+        (TokenType)INVALID, 
+        (TokenType)COMMA, 
+        (TokenType)EQUALS, 
+        (TokenType)IDENTIFIER, 
+        (TokenType)RELATIONAL_OP, 
+        (TokenType)INVERTED_COMMA,
+        (TokenType)TAB,
+        (TokenType)NEW_LINE, 
+        (TokenType)INVALID
+    },
 
-    /*LETTER*/ {(TokenType)LETTER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*LETTER*/ {(TokenType)LETTER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    /*DIGIT*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*DIGIT*/ {
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID
+    },
 
-    /*PRINTABLE*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*WHITE_SPACE*/ {
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)WHITE_SPACE, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)TAB,
+        (TokenType)NEW_LINE, 
+        (TokenType)INVALID
+    },
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    /*RELATIONAL_OP*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*RELATIONAL_OP*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*INVERTED_COMMA*/{(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*TAB*/{
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)WHITE_SPACE, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID,
+        (TokenType)TAB,
+        (TokenType)NEW_LINE, 
+        (TokenType)INVALID
+    },
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*NEW_LINE*/{
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)WHITE_SPACE, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)TAB,
+        (TokenType)NEW_LINE,
+        (TokenType)INVALID
+    },
 
-    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    /*INTEGER_LITERAL*/ {(TokenType)INVALID, (TokenType)INTEGER_LITERAL, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)REAL_LITERAL, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    /*REAL_LITERAL*/ {(TokenType)INVALID, (TokenType)REAL_LITERAL, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 
-    /*STRING_LITERAL*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)STRING_LITERAL, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)LITERAL, (TokenType)INVALID},
+    /*INTEGER_LITERAL*/ {
+        (TokenType)INVALID, 
+        (TokenType)INTEGER_LITERAL, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)REAL_LITERAL, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID
+    },
 
-    /*LITERAL*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+    /*REAL_LITERAL*/ {
+        (TokenType)INVALID, 
+        (TokenType)REAL_LITERAL, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID
+    },
 
-    /*IDENTIFIER*/ {(TokenType)IDENTIFIER, (TokenType)IDENTIFIER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)IDENTIFIER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID}
+    /*STRING_LITERAL*/ {
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID, 
+        (TokenType)INVALID,
+        (TokenType)INVALID, 
+        (TokenType)INVALID
+    },
+
+    /*LITERAL*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
+
+    /*IDENTIFIER*/ {(TokenType)IDENTIFIER, (TokenType)IDENTIFIER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)IDENTIFIER, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID}
 
     // /*SUB_EXPRESSION*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
     // /*UNARY*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
@@ -73,6 +237,6 @@ const TokenType TransitionTable[][17] = {
     // /*PROGRAM*/ {(TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID, (TokenType)INVALID},
 };
 
-const TokenType (*TransitionTableX)[17] = TransitionTable;
+const TokenType (*TransitionTableX)[19] = TransitionTable;
 
 #endif

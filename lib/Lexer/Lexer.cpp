@@ -24,7 +24,6 @@ Lexer::Lexer(const char *fileName)
     }
 
     this->inputString = inputString;
-    this->currentChar = ' ';
     this->currentPosition = 0;
     this->end = 0;
 
@@ -37,7 +36,7 @@ char Lexer::NextChar()
 {
     if (this->currentPosition == inputString->length())
     {
-        if(this->end == 0)
+        if (this->end == 0)
             this->end = 1;
         return EOF;
     }
@@ -66,8 +65,15 @@ Token *Lexer::NextToken()
         }
 
         states->push((TokenType)state);
-        TokenType cat = ClassifierTableX->at(ch);
-        state = TransitionTable[state + 1][cat];
+        try
+        {
+            TokenType cat = ClassifierTable->at(ch);
+            state = TransitionTable[state + 1][cat];
+        }
+        catch (const out_of_range &e)
+        {
+            state = INVALID;
+        }
     }
 
     // for (stack<TokenType> dump = *states; !dump.empty(); dump.pop())
@@ -94,9 +100,12 @@ Token *Lexer::NextToken()
             return token;
         }
 
-        if (this->end == 1){
+        if (this->end == 1)
+        {
             this->end = 2;
         }
+
+        //TODO handle keywords here by checking lexeme
 
         token->type = state;
         token->value = lexeme;
@@ -107,7 +116,7 @@ Token *Lexer::NextToken()
     {
         Token *token = new Token();
         token->type = (TokenType)INVALID;
-        token->value = lexeme;
+        token->value = NULL;
 
         return token;
     }

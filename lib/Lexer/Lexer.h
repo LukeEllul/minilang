@@ -17,7 +17,7 @@ class Lexer
         char NextChar();
         map<char,TokenType> *ClassifierTable;
         TokenType const *TokenTypeTable;
-        TokenType const (*TransitionTable)[17];
+        TokenType const (*TransitionTable)[19];
 
     public:
         Token *NextToken();

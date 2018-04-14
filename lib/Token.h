@@ -8,7 +8,7 @@ enum TokenType
 {
     LETTER,
     DIGIT,
-    PRINTABLE,
+    WHITE_SPACE,
     MULTIPLICATIVE_OP,
     ADDITIVE_OP,
     RELATIONAL_OP,
@@ -22,6 +22,8 @@ enum TokenType
     UNDERSCORE,
     EXCLAMATION_MARK,
     INVERTED_COMMA,
+    TAB,
+    NEW_LINE,
     TOK_EOF,
     TYPE,
     BOOLEAN_LITERAL,

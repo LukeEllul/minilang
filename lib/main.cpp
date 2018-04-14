@@ -10,26 +10,18 @@ int main()
 
     Token *token = lexer->NextToken();
 
-    cout << token->type << endl;
-    cout << *token->value << endl;
+    while (token->type != TOK_EOF && token->type != INVALID)
+    {
+        cout << "Type" << endl;
+        cout << token->type << endl;
 
-    token = lexer->NextToken();
+        cout << "lexeme" << endl;
+        cout << *token->value << endl;
 
-    cout << token->type << endl;
-    cout << *token->value << endl;
+        cout << endl;
 
-    token = lexer->NextToken();
-
-    cout << token->type << endl;
-    cout << *token->value << endl;
-
-    token = lexer->NextToken();
-
-    cout << token->type << endl;
-
-    token = lexer->NextToken();
-
-    cout << token->type << endl;
+        token = lexer->NextToken();
+    }
 
     return 0;
 }
