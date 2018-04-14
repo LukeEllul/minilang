@@ -18,7 +18,7 @@ Lexer::Lexer(const char *fileName)
 
     char c;
     fstream fin(fileName, fstream::in);
-    while(fin.get(c))
+    while (fin.get(c))
     {
         *inputString += c;
     }
@@ -26,6 +26,7 @@ Lexer::Lexer(const char *fileName)
     this->inputString = inputString;
     this->currentChar = ' ';
     this->currentPosition = 0;
+    this->end = 0;
 
     this->ClassifierTable = ClassifierTableX;
     this->TokenTypeTable = TokenTypeTableX;
@@ -34,6 +35,13 @@ Lexer::Lexer(const char *fileName)
 
 char Lexer::NextChar()
 {
+    if (this->currentPosition == inputString->length())
+    {
+        if(this->end == 0)
+            this->end = 1;
+        return EOF;
+    }
+
     this->currentChar = inputString->at(this->currentPosition);
     this->currentPosition++;
     return this->currentChar;
@@ -44,16 +52,15 @@ Token *Lexer::NextToken()
     TokenType state = (TokenType)(-1);
     string *lexeme = new string();
 
-
     stack<TokenType> *states = new stack<TokenType>();
     states->push((TokenType)BAD);
 
-    while(state != INVALID)
+    while (state != INVALID)
     {
         char ch = this->NextChar();
         *lexeme += ch;
 
-        if(finalStates[state] == state)
+        if (finalStates[state] == state)
         {
             states->empty();
         }
@@ -68,7 +75,7 @@ Token *Lexer::NextToken()
 
     //cout << finalStates[32] << endl;
 
-    while((finalStates[state] != state || finalStates[state] == INVALID) && state != BAD)
+    while ((finalStates[state] != state || finalStates[state] == INVALID) && state != BAD)
     {
         state = states->top();
         states->pop();
@@ -76,15 +83,27 @@ Token *Lexer::NextToken()
         this->currentPosition--;
     }
 
-    if(finalStates[state] == state)
+    if (finalStates[state] == state)
     {
         Token *token = new Token();
+
+        if (this->end == 2)
+        {
+            token->type = (TokenType)TOK_EOF;
+            token->value = NULL;
+            return token;
+        }
+
+        if (this->end == 1){
+            this->end = 2;
+        }
+
         token->type = state;
         token->value = lexeme;
 
         return token;
     }
-    else 
+    else
     {
         Token *token = new Token();
         token->type = (TokenType)INVALID;

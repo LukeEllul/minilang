@@ -12,6 +12,7 @@ class Lexer
         string *inputString;
         char currentChar;
         int currentPosition;
+        int end;
 
         char NextChar();
         map<char,TokenType> *ClassifierTable;

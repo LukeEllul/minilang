@@ -18,5 +18,18 @@ int main()
     cout << token->type << endl;
     cout << *token->value << endl;
 
+    token = lexer->NextToken();
+
+    cout << token->type << endl;
+    cout << *token->value << endl;
+
+    token = lexer->NextToken();
+
+    cout << token->type << endl;
+
+    token = lexer->NextToken();
+
+    cout << token->type << endl;
+
     return 0;
 }
