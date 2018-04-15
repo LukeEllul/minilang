@@ -3,12 +3,14 @@
 #include <map>
 #include <fstream>
 #include <stack>
+#include <ctype.h>
 #include "../Token.h"
 #include "Lexer.h"
 
 #include "ClassifierTable.h"
 #include "TokenTypeTable.h"
 #include "TransitionTable.h"
+#include "KeywordTable.h"
 
 using namespace std;
 
@@ -105,7 +107,23 @@ Token *Lexer::NextToken()
             this->end = 2;
         }
 
-        //TODO handle keywords here by checking lexeme
+        //handle keywords here by checking lexeme
+        if (state == LETTER)
+        {
+            try
+            {
+                TokenType keyword = KeywordTable->at(lexeme->c_str());
+                token->type = keyword;
+                token->value = lexeme;
+                return token;
+            }
+            catch (const out_of_range &e)
+            {
+                token->type = (TokenType)PRINTABLE;
+                token->value = lexeme;
+                return token;
+            }
+        }
 
         token->type = state;
         token->value = lexeme;
@@ -115,6 +133,23 @@ Token *Lexer::NextToken()
     else
     {
         Token *token = new Token();
+
+        if (isprint(currentChar) /*TODO here you can include other reasons for not accepting currentChar*/)
+        {
+            token->type = (TokenType)PRINTABLE;
+            token->value = new string(&currentChar);
+
+            if (this->end == 1)
+            {
+                token->type = (TokenType)TOK_EOF;
+                token->value = NULL;
+                return token;
+            }
+
+            this->currentPosition += 2;
+            return token;
+        }
+
         token->type = (TokenType)INVALID;
         token->value = NULL;
 

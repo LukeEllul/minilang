@@ -53,8 +53,21 @@ enum TokenType
     BLOCK,
     PROGRAM,
 
+    //printable
+    PRINTABLE,
+
     INVALID,
-    BAD
+    BAD,
+
+    //keywords
+    SET,
+    VAR,
+    PRINT,
+    RETURN,
+    IF,
+    ELSE,
+    WHILE,
+    DEF
 };
 
 typedef struct

@@ -12,13 +12,16 @@ int main()
 
     while (token->type != TOK_EOF && token->type != INVALID)
     {
-        cout << "Type" << endl;
-        cout << token->type << endl;
+        if (token->type != WHITE_SPACE && token->type != NEW_LINE)
+        {
+            cout << "Type" << endl;
+            cout << token->type << endl;
 
-        cout << "lexeme" << endl;
-        cout << *token->value << endl;
+            cout << "lexeme" << endl;
+            cout << *token->value << endl;
 
-        cout << endl;
+            cout << endl;
+        }
 
         token = lexer->NextToken();
     }
