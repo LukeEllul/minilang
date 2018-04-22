@@ -46,6 +46,8 @@ class Parser
         ASTNode *ParseStatement();
         ASTNode *ParseBlock();
         ASTNode *ParseProgram();
+
+        ASTNode *Fail(Token *token, Token *badToken);
 };
 
 

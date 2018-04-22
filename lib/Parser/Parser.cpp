@@ -1,3 +1,4 @@
+#include <string>
 #include "../Token.h"
 #include "ASTNodes.h"
 #include "../Lexer/Lexer.h"
@@ -17,3 +18,23 @@ Token *Parser::nextToken()
     return currentToken;
 }
 
+ASTNode *Parser::ParseStringLiteral()
+{
+    ASTNode *node = new ASTNode(STRING_LITERAL);
+
+    if (currentToken->type == INVERTED_COMMA)
+    {
+        node->pushValue(currentToken->value);
+        while (nextToken()->type == PRINTABLE)
+        {
+            node->pushValue(currentToken->value);
+        }
+        if (currentToken->type == INVERTED_COMMA)
+        {
+            node->pushValue(currentToken->value);
+            return node;
+        }
+
+        return Fail(node->getToken(), currentToken);
+    }
+}

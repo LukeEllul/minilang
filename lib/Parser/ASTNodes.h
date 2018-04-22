@@ -1,17 +1,24 @@
 #ifndef ASTNODES_H
 #define ASTNODES_H
+#include <stack>
 #include "../Token.h"
+
+using namespace std;
 
 class ASTNode 
 {
     private:
-        const ASTNode *ASTNodes;
-        const Token *token;
+        stack<ASTNode*> *ASTNodes;
+        Token *token;
 
     public:
-        ASTNode(const ASTNode *ASTnodes, Token *token);
-        const ASTNode *getNodes();
-        const Token *getToken();
+        ASTNode(TokenType type);
+        stack<ASTNode*> *getNodes();
+        Token *getToken();
+        void pushNode(ASTNode *node);
+        ASTNode *popNode();
+
+        Token *pushValue(string *value);
 };
 
 #endif
