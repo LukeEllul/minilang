@@ -7,9 +7,11 @@
 class Parser 
 {
     private:
-        const ASTNode *rootNode;
-        const Lexer *lexer;
+        ASTNode *rootNode;
+        Lexer *lexer;
         Token *currentToken;
+
+        Token *nextToken();
 
     public:
         Parser(const char *fileName);
