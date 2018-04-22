@@ -5,18 +5,21 @@
 
 using namespace std;
 
-ASTNode::ASTNode(TokenType type)
+ASTNode::ASTNode(Token *token)
 {
-    Token *token = new Token();
-    token->type = type;
-    token->value = new string();
     this->token = token;
     this->ASTNodes = new stack<ASTNode*>();
+    this->fail = false;
 }
 
 stack<ASTNode*> *ASTNode::getNodes()
 {
     return this->ASTNodes;
+}
+
+void ASTNode::setNodes(stack<ASTNode*> *ASTNodes)
+{
+    this->ASTNodes = ASTNodes;
 }
 
 Token *ASTNode::getToken()

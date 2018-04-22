@@ -12,13 +12,16 @@ class ASTNode
         Token *token;
 
     public:
-        ASTNode(TokenType type);
+        ASTNode(Token *token);
         stack<ASTNode*> *getNodes();
+        void setNodes(stack<ASTNode*> *ASTNodes);
         Token *getToken();
         void pushNode(ASTNode *node);
         ASTNode *popNode();
 
         Token *pushValue(string *value);
+
+        bool fail;
 };
 
 #endif

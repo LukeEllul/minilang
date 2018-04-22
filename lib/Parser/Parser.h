@@ -1,5 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
+#include <stack>
 #include "../Token.h"
 #include "ASTNodes.h"
 #include "../Lexer/Lexer.h"
@@ -47,7 +48,7 @@ class Parser
         ASTNode *ParseBlock();
         ASTNode *ParseProgram();
 
-        ASTNode *Fail(Token *token, Token *badToken);
+        ASTNode *Fail(Token *token, Token *badToken, ASTNode *node);
 };
 
 

@@ -119,7 +119,7 @@ Token *Lexer::NextToken()
             }
             catch (const out_of_range &e)
             {
-                token->type = (TokenType)PRINTABLE;
+                token->type = (TokenType)LETTER;
                 token->value = lexeme;
                 return token;
             }
