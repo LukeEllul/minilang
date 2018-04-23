@@ -12,7 +12,11 @@ class Parser
         Lexer *lexer;
         Token *currentToken;
 
+        int count;
+        bool counting;
+
         Token *nextToken();
+        void backTrack();
 
     public:
         Parser(const char *fileName);

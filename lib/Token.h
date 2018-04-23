@@ -67,7 +67,8 @@ enum TokenType
     IF,
     ELSE,
     WHILE,
-    DEF
+    DEF,
+    NOT
 };
 
 typedef struct

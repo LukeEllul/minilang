@@ -40,7 +40,9 @@ map<const char*, TokenType, compareString> *KeywordTable = new map<const char*, 
 
         {"while", (TokenType)WHILE},
 
-        {"def", (TokenType)DEF}
+        {"def", (TokenType)DEF},
+
+        {"not", (TokenType)NOT}
     }
 );
 

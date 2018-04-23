@@ -21,6 +21,7 @@ class Lexer
 
     public:
         Token *NextToken();
+        void goBack();
         Lexer(const char *filePath);
         ~Lexer();
 };

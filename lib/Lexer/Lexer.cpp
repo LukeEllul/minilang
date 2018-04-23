@@ -34,6 +34,11 @@ Lexer::Lexer(const char *fileName)
     this->TransitionTable = TransitionTableX;
 };
 
+void Lexer::goBack()
+{
+    this->currentPosition--;
+}
+
 char Lexer::NextChar()
 {
     if (this->currentPosition == inputString->length())
