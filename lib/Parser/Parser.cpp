@@ -289,12 +289,12 @@ ASTNode *Parser::ParseFactor()
             n = ParseLiteral();
         case IDENTIFIER:
             this->counting = true;
-            n = ParseIdentifier();
+            n = ParseFunctionCall();
             this->counting = false;
             if(n->fail)
             {
                 backTrack();
-                n = ParseFunctionCall();
+                n = ParseIdentifier();
             }
         case ADDITIVE_OP:
             n = ParseUnary();
