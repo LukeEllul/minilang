@@ -314,3 +314,228 @@ ASTNode *Parser::ParseFactor()
 
     return node;
 }
+
+ASTNode *Parser::ParseTerm()
+{
+    Token *token = new Token();
+    token->type = TERM;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    ASTNode *factor = ParseFactor();
+
+    node->pushValue(factor->getToken()->value);
+    node->pushNode(factor);
+
+    if(factor->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    while(currentToken->type == MULTIPLICATIVE_OP)
+    {
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+
+        ASTNode *factor = ParseFactor();
+        node->pushValue(factor->getToken()->value);
+        node->pushNode(factor);
+
+        if(factor->fail)
+            return Fail(node->getToken(), currentToken, node);
+    }
+
+    return node;
+}
+
+ASTNode *Parser::ParseSimpleExpression()
+{
+    Token *token = new Token();
+    token->type = SIMPLE_EXPRESSION;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    ASTNode *term = ParseTerm();
+
+    node->pushValue(term->getToken()->value);
+    node->pushNode(term);
+
+    if(term->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    while(currentToken->type == ADDITIVE_OP)
+    {
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+
+        ASTNode *term = ParseTerm();
+        node->pushValue(term->getToken()->value);
+        node->pushNode(term);
+
+        if(term->fail)
+            return Fail(node->getToken(), currentToken, node);
+    }
+
+    return node;
+}
+
+ASTNode *Parser::ParseExpression()
+{
+    Token *token = new Token();
+    token->type = EXPRESSION;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    ASTNode *simpleExpression = ParseSimpleExpression();
+
+    node->pushValue(simpleExpression->getToken()->value);
+    node->pushNode(simpleExpression);
+
+    if(simpleExpression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    while(currentToken->type == RELATIONAL_OP)
+    {
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+
+        ASTNode *simpleExpression = ParseSimpleExpression();
+        node->pushValue(simpleExpression->getToken()->value);
+        node->pushNode(simpleExpression);
+
+        if(simpleExpression->fail)
+            return Fail(node->getToken(), currentToken, node);
+    }
+
+    return node;
+}
+
+ASTNode *Parser::ParseAssignment()
+{
+    Token *token = new Token();
+    token->type = ASSIGNMENT;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != SET)
+    {
+        return Fail(node->getToken(), currentToken, node);
+    }
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *identifier = ParseIdentifier();
+
+    node->pushValue(identifier->getToken()->value);
+    node->pushNode(identifier);
+
+    if(identifier->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != EQUALS)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
+
+ASTNode *Parser::ParseVariableDecl()
+{
+    Token *token = new Token();
+    token->type = VARIABLE_DECL;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != VAR)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *identifier = ParseIdentifier();
+
+    node->pushValue(identifier->getToken()->value);
+    node->pushNode(identifier);
+
+    if(identifier->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != COLON)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != TYPE)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != EQUALS)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
+
+ASTNode *Parser::ParsePrintStatement()
+{
+    Token *token = new Token();
+    token->type = PRINT_STATEMENT;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != PRINT)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
