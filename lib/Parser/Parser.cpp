@@ -539,3 +539,283 @@ ASTNode *Parser::ParsePrintStatement()
 
     return node;
 }
+
+ASTNode *Parser::ParseReturnStatement()
+{
+    Token *token = new Token();
+    token->type = RETURN_STATEMENT;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != RETURN)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
+
+ASTNode *Parser::ParseIfStatement()
+{
+    Token *token = new Token();
+    token->type = IF_STATEMENT;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != IF_STATEMENT)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != LEFT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != RIGHT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *block = ParseBlock();
+    node->pushValue(block->getToken()->value);
+    node->pushNode(block);
+
+    if(block->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != ELSE)
+        return node;
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    block = ParseBlock();
+    node->pushValue(block->getToken()->value);
+    node->pushNode(block);
+
+    if(block->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
+
+ASTNode *Parser::ParseWhileStatement()
+{
+    Token *token = new Token();
+    token->type = WHILE_STATEMENT;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    if(currentToken->type != WHILE)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != LEFT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *expression = ParseExpression();
+    node->pushValue(expression->getToken()->value);
+    node->pushNode(expression);
+
+    if(expression->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != RIGHT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *block = ParseBlock();
+    node->pushValue(block->getToken()->value);
+    node->pushNode(block);
+
+    if(block->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
+
+ASTNode *Parser::ParseFormalParam()
+{
+    Token *token = new Token();
+    token->type = FORMAL_PARAM;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    ASTNode *identifier = ParseIdentifier();
+    node->pushValue(identifier->getToken()->value);
+    node->pushNode(identifier);
+
+    if(identifier->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != COLON)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != TYPE)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    return node;
+}
+
+ASTNode *Parser::ParseFormalParams()
+{
+    Token *token = new Token();
+    token->type = FORMAL_PARAMS;
+    token->value = new string();
+    ASTNode *node = new ASTNode(token);
+
+    ASTNode *FormalParam = ParseFormalParam();
+    node->pushValue(FormalParam->getToken()->value);
+    node->pushNode(FormalParam);
+
+    if(FormalParam->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    while(currentToken->type == COMMA)
+    {
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+
+        ASTNode *FormalParam = ParseFormalParam();
+        node->pushValue(FormalParam->getToken()->value);
+        node->pushNode(FormalParam);
+
+        if(FormalParam->fail)
+            return Fail(node->getToken(), currentToken, node);
+    }
+
+    return node;
+}
+
+ASTNode *Parser::ParseFunctionDecl()
+{
+    Token *token = new Token();
+    token->type = FUNCTION_DECL;
+    token->value = new string();
+    ASTNode *node = new ASTNode(currentToken);
+
+    if(currentToken->type != DEF)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *identifier = ParseIdentifier();
+    node->pushValue(identifier->getToken()->value);
+    node->pushNode(identifier);
+
+    if(identifier->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != LEFT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != RIGHT_BRACKET)
+    {
+        ASTNode *FormalParams = ParseFormalParams();
+        node->pushValue(FormalParams->getToken()->value);
+        node->pushNode(FormalParams);
+
+        if(FormalParams->fail)
+            return Fail(node->getToken(), currentToken, node);
+
+        if(currentToken->type != RIGHT_BRACKET)
+            return Fail(node->getToken(), currentToken, node);
+
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+    }
+    else 
+    {
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+    }
+
+    if(currentToken->type != COLON)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    if(currentToken->type != TYPE)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    ASTNode *block = ParseBlock();
+    node->pushValue(block->getToken()->value);
+    node->pushNode(block);
+
+    if(block->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    return node;
+}
