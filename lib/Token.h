@@ -68,7 +68,10 @@ enum TokenType
     ELSE,
     WHILE,
     DEF,
-    NOT
+    NOT,
+
+    LEFT_CURLY,
+    RIGHT_CURLY
 };
 
 typedef struct

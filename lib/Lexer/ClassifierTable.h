@@ -95,6 +95,9 @@ map<char, TokenType> *ClassifierTableX = new map<char, TokenType>(
         {'"', (TokenType)INVERTED_COMMA},
         {';', (TokenType)SEMI_COLON},
 
+        {'{', (TokenType)LEFT_CURLY},
+        {'}', (TokenType)RIGHT_CURLY},
+
         {' ', (TokenType)WHITE_SPACE},
         {'\t', (TokenType)TAB},
         {'\n', (TokenType)NEW_LINE},

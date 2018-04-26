@@ -144,6 +144,16 @@ Token *Lexer::NextToken()
             token->type = (TokenType)PRINTABLE;
             token->value = new string(&currentChar);
 
+            if (currentChar == '{')
+            {
+                token->type = (TokenType)LEFT_CURLY;
+            }
+
+            if (currentChar == '}')
+            {
+                token->type = (TokenType)RIGHT_CURLY;
+            }
+
             if (this->end == 1)
             {
                 token->type = (TokenType)TOK_EOF;
