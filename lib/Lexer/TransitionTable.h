@@ -12,7 +12,7 @@ const TokenType TransitionTable[][19] = {
         (TokenType)RELATIONAL_OP, 
         (TokenType)LEFT_BRACKET, 
         (TokenType)RIGHT_BRACKET, 
-        (TokenType)INVALID, 
+        (TokenType)COLON, 
         (TokenType)SEMI_COLON, 
         (TokenType)INVALID, 
         (TokenType)COMMA, 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <stack>
 #include <string.h>
@@ -21,6 +22,8 @@ Token *Parser::nextToken()
     if (counting)
         count++;
     currentToken = lexer->NextToken();
+    if (currentToken->type == WHITE_SPACE || currentToken->type == NEW_LINE)
+        return nextToken();
     return currentToken;
 }
 
@@ -48,27 +51,30 @@ ASTNode *Parser::ParseStringLiteral()
     token->value = new string();
     ASTNode *node = new ASTNode(token);
 
-    if (currentToken->type == INVERTED_COMMA)
+    if(currentToken->type != INVERTED_COMMA)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    while(currentToken->type == PRINTABLE || currentToken->type == LETTER)
     {
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
-        Token *t = nextToken();
-        while (t->type == PRINTABLE || t->type == LETTER)
-        {
-            node->pushValue(currentToken->value);
-            node->pushNode(new ASTNode(currentToken));
-            t = nextToken();
-        }
-        if (currentToken->type == INVERTED_COMMA)
-        {
-            node->pushValue(currentToken->value);
-            node->pushNode(new ASTNode(currentToken));
-            nextToken();
-            return node;
-        }
-
-        return Fail(node->getToken(), currentToken, node);
+        nextToken();
     }
+
+    if(currentToken->type != INVERTED_COMMA)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
+
+    nextToken();
+
+    return node;
 }
 
 ASTNode *Parser::ParseLiteral()
@@ -83,13 +89,20 @@ ASTNode *Parser::ParseLiteral()
     case BOOLEAN_LITERAL:
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
+        nextToken();
+        break;
     case INTEGER_LITERAL:
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
+        nextToken();
+        break;
     case REAL_LITERAL:
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
+        nextToken();
+        break;
     case INVERTED_COMMA:
+    {
         ASTNode *n = ParseStringLiteral();
         if (n->fail)
         {
@@ -98,11 +111,12 @@ ASTNode *Parser::ParseLiteral()
         }
         node->pushValue(n->getToken()->value);
         node->pushNode(n);
+        break;
+    }
     default:
         return Fail(node->getToken(), currentToken, node);
     }
 
-    nextToken();
     return node;
 }
 
@@ -281,12 +295,16 @@ ASTNode *Parser::ParseFactor()
     {
     case BOOLEAN_LITERAL:
         n = ParseLiteral();
+        break;
     case INTEGER_LITERAL:
         n = ParseLiteral();
+        break;
     case REAL_LITERAL:
         n = ParseLiteral();
+        break;
     case INVERTED_COMMA:
         n = ParseLiteral();
+        break;
     case IDENTIFIER:
         this->counting = true;
         n = ParseFunctionCall();
@@ -296,12 +314,16 @@ ASTNode *Parser::ParseFactor()
             backTrack();
             n = ParseIdentifier();
         }
+        break;
     case ADDITIVE_OP:
         n = ParseUnary();
+        break;
     case NOT:
         n = ParseUnary();
+        break;
     case LEFT_BRACKET:
         n = ParseSubExpression();
+        break;
     default:
         return Fail(node->getToken(), currentToken, node);
     }
@@ -829,53 +851,103 @@ ASTNode *Parser::ParseStatement()
 
     ASTNode *child;
 
-    auto f = [node, child, this]() {
-        node->pushValue(child->getToken()->value);
-        node->pushNode(child);
-        if (child->fail)
-            return Fail(node->getToken(), currentToken, node);
-        if (currentToken->type != SEMI_COLON)
-            return Fail(node->getToken(), currentToken, node);
-        node->pushValue(currentToken->value);
-        node->pushNode(new ASTNode(currentToken));
-        nextToken();
-    };
-
-    auto fn = [node, child, this]() {
-        node->pushValue(child->getToken()->value);
-        node->pushNode(child);
-        if (child->fail)
-            return Fail(node->getToken(), currentToken, node);
-    };
-
     switch (currentToken->type)
     {
-        case VAR:
-            child = ParseVariableDecl();
-            f();
-        case SET:
-            child = ParseAssignment();
-            f();
-        case PRINT:
-            child = ParsePrintStatement();
-            f();
-        case IF:
-            child = ParseIfStatement();
-            fn();
-        case WHILE:
-            child = ParseWhileStatement();
-            fn();
-        case RETURN:
-            child = ParseReturnStatement();
-            f();
-        case DEF:
-            child = ParseFunctionDecl();
-            fn();
-        case RIGHT_CURLY:
-            child = ParseBlock();
-            fn();
-        default:
+    case VAR:
+        child = ParseVariableDecl();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+
+        if (child->fail)
             return Fail(node->getToken(), currentToken, node);
+
+        if (currentToken->type != SEMI_COLON)
+            return Fail(node->getToken(), currentToken, node);
+
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+
+        break;
+    case SET:
+        child = ParseAssignment();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+
+        if (currentToken->type != SEMI_COLON)
+            return Fail(node->getToken(), currentToken, node);
+
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+        break;
+    case PRINT:
+        child = ParsePrintStatement();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+
+        if (currentToken->type != SEMI_COLON)
+            return Fail(node->getToken(), currentToken, node);
+
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+        break;
+    case IF:
+        child = ParseIfStatement();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+        break;
+    case WHILE:
+        child = ParseWhileStatement();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+        break;
+    case RETURN:
+        child = ParseReturnStatement();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+
+        if (currentToken->type != SEMI_COLON)
+            return Fail(node->getToken(), currentToken, node);
+
+        node->pushValue(currentToken->value);
+        node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
+        break;
+    case DEF:
+        child = ParseFunctionDecl();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+        break;
+    case RIGHT_CURLY:
+        child = ParseBlock();
+        node->pushValue(child->getToken()->value);
+        node->pushNode(child);
+        if (child->fail)
+            return Fail(node->getToken(), currentToken, node);
+        break;
+    default:
+        return Fail(node->getToken(), currentToken, node);
     }
 
     return node;
@@ -888,7 +960,7 @@ ASTNode *Parser::ParseBlock()
     token->value = new string();
     ASTNode *node = new ASTNode(token);
 
-    if(currentToken->type != LEFT_CURLY)
+    if (currentToken->type != LEFT_CURLY)
         return Fail(node->getToken(), currentToken, node);
 
     node->pushValue(currentToken->value);
@@ -898,14 +970,14 @@ ASTNode *Parser::ParseBlock()
 
     ASTNode *statement;
 
-    while(currentToken->type != RIGHT_CURLY)
+    while (currentToken->type != RIGHT_CURLY)
     {
         statement = ParseStatement();
         node->pushValue(statement->getToken()->value);
         node->pushNode(statement);
 
-        if(statement->fail)
-            return Fail(node->getToken(), currentToken, node);      
+        if (statement->fail)
+            return Fail(node->getToken(), currentToken, node);
     }
 
     node->pushValue(currentToken->value);
@@ -925,16 +997,16 @@ ASTNode *Parser::ParseProgram()
 
     ASTNode *statement;
 
-    while(true)
+    while (true)
     {
-        if(currentToken->type == TOK_EOF)
+        if (currentToken->type == TOK_EOF)
             return node;
-        
+
         statement = ParseStatement();
         node->pushValue(statement->getToken()->value);
         node->pushNode(statement);
 
-        if(statement->fail)
+        if (statement->fail)
             return Fail(node->getToken(), currentToken, node);
     }
 }

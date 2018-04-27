@@ -67,7 +67,7 @@ TokenType const finalStatesX[] = {
     (TokenType)RELATIONAL_OP,
     (TokenType)LEFT_BRACKET,
     (TokenType)RIGHT_BRACKET,
-    (TokenType)NULL,
+    (TokenType)COLON,
     (TokenType)SEMI_COLON,
     (TokenType)NULL,
     (TokenType)COMMA,

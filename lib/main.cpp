@@ -1,30 +1,21 @@
 #include <iostream>
+#include <string>
 #include "Token.h"
 #include "./Lexer/Lexer.h"
+#include "./Parser/Parser.h"
 
 using namespace std;
 
+const char *loc = "./scripts/s1.minilang";
+
 int main()
 {
-    Lexer *lexer = new Lexer("./scripts/s1.minilang");
+    Parser *parser = new Parser(loc);
 
-    Token *token = lexer->NextToken();
+    ASTNode *program = parser->ParseProgram();
 
-    while (token->type != TOK_EOF && token->type != INVALID)
-    {
-        if (token->type != WHITE_SPACE && token->type != NEW_LINE)
-        {
-            cout << "Type" << endl;
-            cout << token->type << endl;
-
-            cout << "lexeme" << endl;
-            cout << *token->value << endl;
-
-            cout << endl;
-        }
-
-        token = lexer->NextToken();
-    }
+    cout << program->fail << endl;
+    cout << (*program->getToken()->value) << endl;
 
     return 0;
 }

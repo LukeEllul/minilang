@@ -45,7 +45,7 @@ char Lexer::NextChar()
     {
         if (this->end == 0)
             this->end = 1;
-        return EOF;
+            return EOF;
     }
 
     this->currentChar = inputString->at(this->currentPosition);
@@ -154,12 +154,15 @@ Token *Lexer::NextToken()
                 token->type = (TokenType)RIGHT_CURLY;
             }
 
-            if (this->end == 1)
+            if (this->end == 2)
             {
                 token->type = (TokenType)TOK_EOF;
                 token->value = NULL;
                 return token;
             }
+
+            if(this->end == 1)
+                this->end = 2;
 
             this->currentPosition += 2;
             return token;

@@ -56,4 +56,4 @@ class Parser
 };
 
 
-#endif PARSER_H
+#endif
