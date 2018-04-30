@@ -37,6 +37,7 @@ Lexer::Lexer(const char *fileName)
 void Lexer::goBack()
 {
     this->currentPosition--;
+    this->end = 0;
 }
 
 char Lexer::NextChar()
@@ -128,6 +129,17 @@ Token *Lexer::NextToken()
                 token->value = lexeme;
                 return token;
             }
+        }
+
+        if(currentChar == '}')
+        {
+            token->type = (TokenType)RIGHT_CURLY;
+            token->value = new string("}");
+            NextChar();
+            NextChar();
+            if(this->end == 1)
+                this->end = 2;
+            return token;
         }
 
         token->type = state;

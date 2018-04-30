@@ -29,11 +29,13 @@ Token *Parser::nextToken()
 
 void Parser::backTrack()
 {
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count + 1; i++)
     {
         this->lexer->goBack();
     }
     this->count = 0;
+    this->counting = false;
+    nextToken();
 }
 
 ASTNode *Parser::Fail(Token *token, Token *badToken, ASTNode *fail)
@@ -304,6 +306,16 @@ ASTNode *Parser::ParseFactor()
         break;
     case INVERTED_COMMA:
         n = ParseLiteral();
+        break;
+    case LETTER:
+        this->counting = true;
+        n = ParseFunctionCall();
+        this->counting = false;
+        if (n->fail)
+        {
+            backTrack();
+            n = ParseIdentifier();
+        }
         break;
     case IDENTIFIER:
         this->counting = true;
@@ -726,6 +738,8 @@ ASTNode *Parser::ParseFormalParam()
     node->pushValue(currentToken->value);
     node->pushNode(new ASTNode(currentToken));
 
+    nextToken();
+
     return node;
 }
 
@@ -929,7 +943,6 @@ ASTNode *Parser::ParseStatement()
 
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
-
         nextToken();
         break;
     case DEF:
@@ -939,7 +952,7 @@ ASTNode *Parser::ParseStatement()
         if (child->fail)
             return Fail(node->getToken(), currentToken, node);
         break;
-    case RIGHT_CURLY:
+    case LEFT_CURLY:
         child = ParseBlock();
         node->pushValue(child->getToken()->value);
         node->pushNode(child);
@@ -975,7 +988,6 @@ ASTNode *Parser::ParseBlock()
         statement = ParseStatement();
         node->pushValue(statement->getToken()->value);
         node->pushNode(statement);
-
         if (statement->fail)
             return Fail(node->getToken(), currentToken, node);
     }

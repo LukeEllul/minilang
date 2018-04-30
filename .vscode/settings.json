@@ -5,6 +5,9 @@
         "xutility": "cpp",
         "iostream": "cpp",
         "iosfwd": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "stack": "cpp",
+        "deque": "cpp",
+        "map": "cpp"
     }
 }
