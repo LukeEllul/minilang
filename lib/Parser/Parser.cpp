@@ -179,15 +179,20 @@ ASTNode *Parser::ParseActualParams()
     node->pushValue(expression->getToken()->value);
     node->pushNode(expression);
 
-    if (expression->fail || currentToken->type != COMMA)
-    {
+    // if (expression->fail || currentToken->type != COMMA)
+    // {
+    //     return Fail(node->getToken(), currentToken, node);
+    // }
+
+    if(expression->fail)
         return Fail(node->getToken(), currentToken, node);
-    }
 
     while (currentToken->type == COMMA)
     {
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
+
+        nextToken();
 
         ASTNode *expression = ParseExpression();
         node->pushValue(expression->getToken()->value);
@@ -211,8 +216,14 @@ ASTNode *Parser::ParseFunctionCall()
     node->pushValue(identifier->getToken()->value);
     node->pushNode(identifier);
 
-    if (identifier->fail || currentToken->type != LEFT_BRACKET)
+    if(identifier->fail)
         return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != LEFT_BRACKET)
+        return Fail(node->getToken(), currentToken, node);
+
+    node->pushValue(currentToken->value);
+    node->pushNode(new ASTNode(currentToken));
 
     nextToken();
 
@@ -220,7 +231,10 @@ ASTNode *Parser::ParseFunctionCall()
     node->pushValue(actualParams->getToken()->value);
     node->pushNode(actualParams);
 
-    if (actualParams->fail || currentToken->type != RIGHT_BRACKET)
+    if(actualParams->fail)
+        return Fail(node->getToken(), currentToken, node);
+
+    if(currentToken->type != RIGHT_BRACKET)
         return Fail(node->getToken(), currentToken, node);
 
     node->pushValue(currentToken->value);
@@ -606,7 +620,7 @@ ASTNode *Parser::ParseIfStatement()
     token->value = new string();
     ASTNode *node = new ASTNode(token);
 
-    if (currentToken->type != IF_STATEMENT)
+    if (currentToken->type != IF)
         return Fail(node->getToken(), currentToken, node);
 
     node->pushValue(currentToken->value);
@@ -780,7 +794,7 @@ ASTNode *Parser::ParseFunctionDecl()
     Token *token = new Token();
     token->type = FUNCTION_DECL;
     token->value = new string();
-    ASTNode *node = new ASTNode(currentToken);
+    ASTNode *node = new ASTNode(token);
 
     if (currentToken->type != DEF)
         return Fail(node->getToken(), currentToken, node);

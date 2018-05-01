@@ -28,9 +28,11 @@ int main()
 
     stack<ASTNode*> *s = program->getNodes();
 
-    //cout << s->size() << endl;
+    cout << s->top()->getNodes()->top()->getNodes()->size() << endl;
 
-    printStack(s);
+    printStack(s->top()->getNodes()->top()->getNodes());
+
+    cout << s->top()->getNodes()->top()->getToken()->type << endl;
 
     return 0;
 }
