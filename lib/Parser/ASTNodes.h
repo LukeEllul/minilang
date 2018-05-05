@@ -21,6 +21,8 @@ class ASTNode
 
         Token *pushValue(string *value);
 
+        bool leaf();
+
         bool fail;
 };
 

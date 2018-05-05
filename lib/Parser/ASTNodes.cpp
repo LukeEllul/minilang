@@ -44,3 +44,10 @@ Token *ASTNode::pushValue(string *value)
     token->value->append(*value);
     return token;
 }
+
+bool ASTNode::leaf()
+{
+    if(this->ASTNodes->empty())
+        return true;
+    else return false;
+} 
