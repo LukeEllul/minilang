@@ -16,6 +16,9 @@ class SemanticAnalyzer
 
     public:
         SemanticAnalyzer(ASTNode *program);
+
+        TokenType AnalyzeFactor(ASTNode *factor);
+
         TokenType AnalyzeTerm(ASTNode *term);
         TokenType AnalyzeSimpleExpression(ASTNode *simpleExpression);
         TokenType AnalyzeExpression(ASTNode *expression);

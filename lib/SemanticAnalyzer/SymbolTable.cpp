@@ -24,13 +24,21 @@ void SymbolTable::insert(Token *identifier, TokenType type)
 
 TokenType SymbolTable::lookup(Token *identifier)
 {
-    try
+    stack<map<string, TokenType> *> dump = *(this->scopes);
+
+    while (!dump.empty())
     {
-        return this->scopes->top()->at(*(identifier->value));
-    } catch(const out_of_range &e)
-    {
-        return INVALID;
+        try
+        {
+            return dump.top()->at(*(identifier->value));
+        }
+        catch (const out_of_range &e)
+        {
+            dump.pop();
+        }
     }
+
+    return INVALID;
 }
 
 void SymbolTable::pop()
