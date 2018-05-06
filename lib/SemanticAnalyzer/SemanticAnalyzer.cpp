@@ -26,7 +26,13 @@ TokenType SemanticAnalyzer::AnalyzeFactor(ASTNode *factor)
             }
         case FUNCTION_CALL:
         {
-            Token *identifier = factor->getNodes()->top()->getNodes()->top()->getToken();
+            Token *identifier;
+            stack<ASTNode*> dump = *(factor->getNodes());
+            while(!dump.empty())
+            {
+                identifier = dump.top()->getToken();
+                dump.pop();
+            }
             return st->lookup(identifier);
         }
         case SUB_EXPRESSION:
@@ -40,9 +46,7 @@ TokenType SemanticAnalyzer::AnalyzeFactor(ASTNode *factor)
         case UNARY:
         {
             ASTNode *unary = factor->getNodes()->top();
-            stack<ASTNode*> dump = *(unary->getNodes());
-            dump.pop();
-            ASTNode *expression = dump.top();
+            ASTNode *expression = unary->getNodes()->top();
             return AnalyzeExpression(expression);
         }
     }
