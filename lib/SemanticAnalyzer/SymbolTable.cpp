@@ -2,14 +2,12 @@
 #include <map>
 #include <string>
 #include "../Token.h"
-#include "../Parser/ASTNodes.h"
 #include "./SymbolTable.h"
 
 using namespace std;
 
-SymbolTable::SymbolTable(ASTNode *program)
+SymbolTable::SymbolTable()
 {
-    this->tree = program;
     this->scopes = new stack<map<string, TokenType> *>();
     this->push();
 }
