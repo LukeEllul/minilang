@@ -45,3 +45,8 @@ void SymbolTable::pop()
 {
     this->scopes->pop();
 }
+
+map<string, TokenType> *SymbolTable::currentScope()
+{
+    return this->scopes->top();
+}

@@ -18,6 +18,7 @@ class SymbolTable
     void insert(Token *identifier, TokenType type);
     TokenType lookup(Token *identifier);
     void pop();
+    map<string, TokenType> *currentScope();
 };
 
 #endif
