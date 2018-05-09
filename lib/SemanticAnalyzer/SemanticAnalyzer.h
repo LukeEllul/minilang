@@ -35,7 +35,7 @@ class SemanticAnalyzer
 
         bool checkStatemant(ASTNode *statement);
 
-        bool AnalyzeProgram();
+        bool AnalyzeProgram(ASTNode *program);
 };
 
 #endif

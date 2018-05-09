@@ -276,3 +276,119 @@ bool SemanticAnalyzer::checkStatemant(ASTNode *statement)
         else return true;
     }
 }
+
+bool SemanticAnalyzer::checkIfStatement(ASTNode* ifStatement)
+{
+    stack<ASTNode*> dump = *(ifStatement->getNodes());
+    ASTNode *firstBlock = dump.top();
+    ASTNode *secondBlock = NULL;
+    dump.pop();
+    if(dump.top()->getToken()->type == ELSE)
+    {
+        dump.pop();
+        secondBlock = dump.top();
+        dump.pop();
+    }
+    dump.pop();
+    ASTNode *expression = dump.top();
+    if(AnalyzeExpression(expression) == INVALID)
+        return false;
+    
+    st->push();
+    if(!checkBlock(firstBlock))
+        return (st->pop(), false);
+    st->pop();
+    if(secondBlock == NULL)
+        return true;
+    st->push();
+    if(!checkBlock(secondBlock))
+        return (st->pop(), false);
+    st->pop();
+
+    return true;
+}
+
+bool SemanticAnalyzer::checkWhileStatement(ASTNode* whileStatement)
+{
+    stack<ASTNode*> dump = *(whileStatement->getNodes());
+    ASTNode *block = dump.top();
+    dump.pop();
+    dump.pop();
+    ASTNode *expression = dump.top();
+    if(AnalyzeExpression(expression) == INVALID)
+        return false;
+    
+    st->push();
+    if(!checkBlock(block))
+        return (st->pop(), false);
+
+    st->pop();
+    return true;
+}
+
+bool SemanticAnalyzer::checkFormalParam(ASTNode *formalParam)
+{
+    stack<ASTNode*> dump = *(formalParam->getNodes());
+    TokenType type = GetType(dump.top()->getToken()->value);
+    dump.pop();
+    dump.pop();
+    ASTNode *identifier = dump.top();
+    st->insert(identifier->getToken(), type);
+
+    return true;
+}
+
+bool SemanticAnalyzer::checkFormalParams(ASTNode *formalParams)
+{
+    stack<ASTNode*> dump = *(formalParams->getNodes());
+    ASTNode *formalParam = dump.top();
+    checkFormalParam(formalParam);
+    dump.pop();
+
+    while(!dump.empty())
+    {
+        dump.pop();
+        formalParam = dump.top();
+        checkFormalParam(formalParam);
+        dump.pop();
+    }
+
+    return true;
+}
+
+bool SemanticAnalyzer::checkBlock(ASTNode *block)
+{
+    stack<ASTNode*> dump = *(block->getNodes());
+    dump.pop();
+    ASTNode *node = dump.top();
+
+    while(node->getToken()->type != LEFT_CURLY)
+    {
+        if(!checkStatemant(node))
+            return false;
+        dump.pop();
+        node = dump.top();
+    }
+
+    return true;
+}
+
+bool SemanticAnalyzer::AnalyzeProgram(ASTNode *program)
+{
+    stack<ASTNode*> dump = *(program->getNodes());
+    ASTNode *statement = dump.top();
+    if(!checkStatemant(statement))
+        return false;
+
+    dump.pop();
+
+    while(!dump.empty())
+    {
+        statement = dump.top();
+        if(!checkStatemant(statement))
+            return false;
+        dump.pop();
+    }
+
+    return true;
+}
