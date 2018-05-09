@@ -17,14 +17,23 @@ class SemanticAnalyzer
     public:
         SemanticAnalyzer(ASTNode *program);
 
-        TokenType AnalyzeFactor(ASTNode *factor);
+        TokenType GetType(string *s);
 
+        TokenType AnalyzeFactor(ASTNode *factor);
         TokenType AnalyzeTerm(ASTNode *term);
         TokenType AnalyzeSimpleExpression(ASTNode *simpleExpression);
         TokenType AnalyzeExpression(ASTNode *expression);
         
+        bool checkBlock(ASTNode *block);
         bool checkAssignment(ASTNode *assignment);
         bool checkVariableDecl(ASTNode *variableDecl);
+        bool checkIfStatement(ASTNode *ifStatement);
+        bool checkWhileStatement(ASTNode *whileStatement);
+        bool checkFormalParam(ASTNode *formalParam);
+        bool checkFormalParams(ASTNode *formalParams);
+        bool checkFunctionDecl(ASTNode *functionDecl);
+
+        bool checkStatemant(ASTNode *statement);
 
         bool AnalyzeProgram();
 };

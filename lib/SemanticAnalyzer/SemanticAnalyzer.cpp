@@ -13,6 +13,18 @@ SemanticAnalyzer::SemanticAnalyzer(ASTNode *program)
     this->st = new SymbolTable();
 }
 
+TokenType SemanticAnalyzer::GetType(string *s)
+{
+    if(s->compare("real") == 0)
+        return REAL_LITERAL;
+    if(s->compare("int") == 0)
+        return INTEGER_LITERAL;
+    if(s->compare("bool") == 0)
+        return BOOLEAN_LITERAL;
+    if(s->compare("string") == 0)
+        return STRING_LITERAL;
+}
+
 TokenType SemanticAnalyzer::AnalyzeFactor(ASTNode *factor)
 {
     Token *t = factor->getNodes()->top()->getToken();
@@ -174,7 +186,7 @@ bool SemanticAnalyzer::checkVariableDecl(ASTNode *variableDecl)
     ASTNode *identifier = dump.top();
 
     TokenType expressionType = AnalyzeExpression(expression);
-    TokenType typeType = type->getToken()->type;
+    TokenType typeType = GetType(type->getToken()->value);
     if(expressionType != typeType)
         return false;
 
@@ -186,5 +198,81 @@ bool SemanticAnalyzer::checkVariableDecl(ASTNode *variableDecl)
     catch(out_of_range &e)
     {
         st->insert(identifier->getToken(), expressionType);
+        return true;
+    }
+}
+
+bool SemanticAnalyzer::checkFunctionDecl(ASTNode *functionDecl)
+{
+    stack<ASTNode*> dump = *(functionDecl->getNodes());
+    ASTNode *block = dump.top();
+    dump.pop();
+    TokenType type = GetType(dump.top()->getToken()->value);
+    dump.pop();
+    dump.pop();
+    dump.pop();
+    ASTNode *formalParams = dump.top();
+    dump.pop();
+    dump.pop();
+    ASTNode *identifier = dump.top();
+    try
+    {
+        st->currentScope()->at(*(identifier->getToken()->value));
+        return false;
+    } 
+    catch(out_of_range &e)
+    {
+        st->insert(identifier->getToken(), type);
+    }
+    st->push();
+    checkFormalParams(formalParams);
+    
+    if(checkBlock(block))
+    {
+        st->pop();
+        return true;
+    }
+    else 
+    {
+        st->pop();
+        return false;
+    }
+}
+
+bool SemanticAnalyzer::checkStatemant(ASTNode *statement)
+{
+    stack<ASTNode*> dump = *(statement->getNodes());
+    TokenType type = dump.top()->getToken()->type;
+
+    if(type == IF_STATEMENT)
+        return checkIfStatement(dump.top());
+    if(type == WHILE_STATEMENT)
+        return checkWhileStatement(dump.top());
+    if(type == FUNCTION_DECL)
+        return checkFunctionDecl(dump.top());
+    if(type == BLOCK)
+    {
+        st->push();
+        if(checkBlock(dump.top()))
+        {
+            st->pop();
+            return true;
+        }
+        else
+        {
+            st->pop();
+            return false;
+        }
+    }
+    else 
+    {
+        dump.pop();
+        type = dump.top()->getToken()->type;
+
+        if(type == VARIABLE_DECL)
+            return checkVariableDecl(dump.top());
+        if(type == ASSIGNMENT)
+            return checkAssignment(dump.top());
+        else return true;
     }
 }
