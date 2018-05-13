@@ -2,6 +2,7 @@
 #define INTERPRETER_H
 #include <stack>
 #include <string>
+#include <map>
 #include "../Token.h"
 #include "../SemanticAnalyzer/SymbolTable.h"
 #include "../Parser/ASTNodes.h"
@@ -9,37 +10,41 @@
 
 using namespace std;
 
-class Interpreter 
+class Interpreter
 {
-    private:
-        Reference *rf;
+  private:
+    Reference *rf;
+    map<string, ASTNode *> *functionBlocks;
 
-    public:
-        Interpreter(ASTNode *program);
+  public:
+    Interpreter(ASTNode *program);
 
-        string *InterpretFactor(ASTNode *factor);
-        string *InterpretTerm(ASTNode *term);
-        string *InterpretSimpleExpression(ASTNode *simpleExpression);
-        string *InterpretExpression(ASTNode *expression);
+    string *InterpretFactor(ASTNode *factor);
+    string *InterpretTerm(ASTNode *term);
+    string *InterpretSimpleExpression(ASTNode *simpleExpression);
+    string *InterpretExpression(ASTNode *expression);
 
-        void InterpretAssignment(ASTNode *assignment);
-        void InterpretVariableDecl(ASTNode *veriableDecl);
-        void InterpretPrintStatement(ASTNode *printStatement);
+    string *InterpretFunctionCall(ASTNode *functionCall);
+    string *InterpretFunctionBlock(ASTNode *block);
 
-        string *InterpretReturnStatement(ASTNode *returnStatement);
+    void InterpretAssignment(ASTNode *assignment);
+    void InterpretVariableDecl(ASTNode *veriableDecl);
+    void InterpretPrintStatement(ASTNode *printStatement);
 
-        void InterpretIfStatement(ASTNode *ifStatement);
-        void InterpretWhileStatement(ASTNode *whileStatement);
+    string *InterpretReturnStatement(ASTNode *returnStatement);
 
-        void InterpretFormalParam(ASTNode *formalParam);
-        void InterpretFormalParams(ASTNode *formalParams);
+    void InterpretIfStatement(ASTNode *ifStatement);
+    void InterpretWhileStatement(ASTNode *whileStatement);
 
-        void InterpretFunctionDecl(ASTNode *functionDecl);
+    void InterpretFormalParam(ASTNode *formalParam);
+    void InterpretFormalParams(ASTNode *formalParams);
 
-        void InterpretStatement(ASTNode *statment);
+    void InterpretFunctionDecl(ASTNode *functionDecl);
 
-        void InterpretBlock(ASTNode *block);
-        void InterpretProgram(ASTNode *program);
+    void InterpretStatement(ASTNode *statment);
+
+    void InterpretBlock(ASTNode *block);
+    void InterpretProgram(ASTNode *program);
 };
 
 #endif

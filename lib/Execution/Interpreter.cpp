@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stack>
 #include <string>
+#include <map>
 #include <string.h>
 #include <sstream>
 #include "../Token.h"
@@ -14,6 +15,7 @@ using namespace std;
 Interpreter::Interpreter(ASTNode *program)
 {
     this->rf = new Reference();
+    this->functionBlocks = new map<string, ASTNode *>();
 }
 
 string *Interpreter::InterpretFactor(ASTNode *factor)
@@ -21,11 +23,11 @@ string *Interpreter::InterpretFactor(ASTNode *factor)
     stack<ASTNode *> dump = *(factor->getNodes());
     ASTNode *node = dump.top();
 
-    if(node->getToken()->type == LITERAL)
+    if (node->getToken()->type == LITERAL)
     {
         node = node->getNodes()->top();
 
-        if(node->getToken()->type == STRING_LITERAL)
+        if (node->getToken()->type == STRING_LITERAL)
         {
             stack<ASTNode *> dump = *(node->getNodes());
             dump.pop();
@@ -34,21 +36,21 @@ string *Interpreter::InterpretFactor(ASTNode *factor)
 
         return node->getToken()->value;
     }
-    if(node->getToken()->type == IDENTIFIER)
+    if (node->getToken()->type == IDENTIFIER)
     {
         return rf->lookup(node->getToken());
     }
-    if(node->getToken()->type == FUNCTION_CALL)
+    if (node->getToken()->type == FUNCTION_CALL)
     {
         stack<ASTNode *> dump = *(node->getNodes());
         dump.pop();
         dump.pop();
         dump.pop();
         ASTNode *identifier = dump.top();
-        
+
         //TODO
     }
-    if(node->getToken()->type == SUB_EXPRESSION)
+    if (node->getToken()->type == SUB_EXPRESSION)
     {
         stack<ASTNode *> dump = *(node->getNodes());
         dump.pop();
@@ -56,7 +58,7 @@ string *Interpreter::InterpretFactor(ASTNode *factor)
 
         return InterpretExpression(expression);
     }
-    if(node->getToken()->type == UNARY)
+    if (node->getToken()->type == UNARY)
     {
         stack<ASTNode *> dump = *(node->getNodes());
         ASTNode *expression = dump.top();
@@ -72,7 +74,7 @@ string *Interpreter::InterpretTerm(ASTNode *term)
     dump.pop();
     string *e = InterpretFactor(factor);
 
-    while(!dump.empty())
+    while (!dump.empty())
     {
         dump.pop();
         string *n = InterpretFactor(dump.top());
@@ -82,7 +84,7 @@ string *Interpreter::InterpretTerm(ASTNode *term)
         ostringstream strs;
         strs << (n1 * n2);
         e = &(strs.str());
-        
+
         dump.pop();
     }
 
@@ -96,7 +98,7 @@ string *Interpreter::InterpretSimpleExpression(ASTNode *simpleExpression)
     dump.pop();
     string *e = InterpretTerm(term);
 
-    while(!dump.empty())
+    while (!dump.empty())
     {
         dump.pop();
         string *n = InterpretTerm(dump.top());
@@ -120,58 +122,70 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
     dump.pop();
     string *e = InterpretSimpleExpression(simpleExpression);
 
-    while(!dump.empty())
+    while (!dump.empty())
     {
         ASTNode *relationalOp = dump.top();
         const char *v = relationalOp->getToken()->value->c_str();
         dump.pop();
         string *n = InterpretSimpleExpression(dump.top());
 
-        if(strcmp(v, "<") == 0)
+        if (strcmp(v, "<") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
 
-            if(n2 < n1) e = new string("true");
-            else e = new string("false");
+            if (n2 < n1)
+                e = new string("true");
+            else
+                e = new string("false");
         }
-        if(strcmp(v, ">") == 0)
+        if (strcmp(v, ">") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
 
-            if(n2 > n1) e = new string("true");
-            else e = new string("false");
+            if (n2 > n1)
+                e = new string("true");
+            else
+                e = new string("false");
         }
-        if(strcmp(v, "<=") == 0)
+        if (strcmp(v, "<=") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
 
-            if(n2 <= n1) e = new string("true");
-            else e = new string("false");
+            if (n2 <= n1)
+                e = new string("true");
+            else
+                e = new string("false");
         }
-        if(strcmp(v, ">=") == 0)
+        if (strcmp(v, ">=") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
 
-            if(n2 >= n1) e = new string("true");
-            else e = new string("false");
+            if (n2 >= n1)
+                e = new string("true");
+            else
+                e = new string("false");
         }
 
         const char *E = e->c_str();
         const char *N = n->c_str();
 
-        if(strcmp(v, "==") == 0)
+        if (strcmp(v, "==") == 0)
         {
-            if(strcmp(E, N) == 0) e = new string("true");
-            else e = new string("false");
+            if (strcmp(E, N) == 0)
+                e = new string("true");
+            else
+                e = new string("false");
         }
-        if(strcmp(v, "!=") == 0)
+        if (strcmp(v, "!=") == 0)
         {
-            if(strcmp(E, N) == 0) e = new string("false");
-            else e = new string("true");
+            if (strcmp(E, N) == 0)
+                e = new string("false");
+            else
+                e = new string("true");
         }
 
         dump.pop();
@@ -187,7 +201,7 @@ void Interpreter::InterpretAssignment(ASTNode *assignment)
     dump.pop();
     dump.pop();
     ASTNode *identifier = dump.top();
-    
+
     rf->insert(identifier->getToken(), e);
 }
 
@@ -199,7 +213,7 @@ void Interpreter::InterpretVariableDecl(ASTNode *variableDec)
     dump.pop();
     dump.pop();
     dump.pop();
-    
+
     ASTNode *identifier = dump.top();
 
     rf->insert(identifier->getToken(), e);
