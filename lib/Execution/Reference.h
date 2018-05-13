@@ -11,15 +11,15 @@ using namespace std;
 class Reference 
 {
     private:
-        stack<map<string, ASTNode*> *> *scopes;
+        stack<map<string, string*> *> *scopes;
 
     public:
         Reference();
         void push();
-        void insert(Token *identifier, ASTNode *node);
-        ASTNode *lookup(Token *identifier);
+        void insert(Token *identifier, string *s);
+        string *lookup(Token *identifier);
         void pop();
-        map<string, ASTNode*> *currentScope();
+        map<string, string*> *currentScope();
 };
 
 #endif

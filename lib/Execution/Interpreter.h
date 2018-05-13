@@ -5,12 +5,14 @@
 #include "../Token.h"
 #include "../SemanticAnalyzer/SymbolTable.h"
 #include "../Parser/ASTNodes.h"
+#include "Reference.h"
 
 using namespace std;
 
 class Interpreter 
 {
     private:
+        Reference *rf;
 
     public:
         Interpreter(ASTNode *program);

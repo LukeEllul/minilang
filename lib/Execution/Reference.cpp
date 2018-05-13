@@ -8,23 +8,23 @@ using namespace std;
 
 Reference::Reference()
 {
-    this->scopes = new stack<map<string, ASTNode *> *>();
+    this->scopes = new stack<map<string, string *> *>();
     this->push();
 }
 
 void Reference::push()
 {
-    this->scopes->push(new map<string, ASTNode *>());
+    this->scopes->push(new map<string, string *>());
 }
 
-void Reference::insert(Token *identifier, ASTNode *node)
+void Reference::insert(Token *identifier, string *s)
 {
-    this->scopes->top()->insert(pair<string, ASTNode*>(*(identifier->value), node));
+    this->scopes->top()->insert(pair<string, string*>(*(identifier->value), s));
 }
 
-ASTNode *Reference::lookup(Token *identifier)
+string *Reference::lookup(Token *identifier)
 {
-    stack<map<string, ASTNode*> *> dump = *(this->scopes);
+    stack<map<string, string*> *> dump = *(this->scopes);
 
     while(!dump.empty())
     {
@@ -46,7 +46,7 @@ void Reference::pop()
     this->scopes->pop();
 }
 
-map<string, ASTNode*> *Reference::currentScope()
+map<string, string*> *Reference::currentScope()
 {
     return this->scopes->top();
 }
