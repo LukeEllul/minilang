@@ -15,7 +15,7 @@ using namespace std;
 Interpreter::Interpreter(ASTNode *program)
 {
     this->rf = new Reference();
-    this->functionBlocks = new map<string, ASTNode *>();
+    this->functionDefs = new map<string, ASTNode *>();
 }
 
 string *Interpreter::InterpretFactor(ASTNode *factor)
@@ -42,13 +42,7 @@ string *Interpreter::InterpretFactor(ASTNode *factor)
     }
     if (node->getToken()->type == FUNCTION_CALL)
     {
-        stack<ASTNode *> dump = *(node->getNodes());
-        dump.pop();
-        dump.pop();
-        dump.pop();
-        ASTNode *identifier = dump.top();
-
-        //TODO
+        return InterpretFunctionCall(node);
     }
     if (node->getToken()->type == SUB_EXPRESSION)
     {
@@ -232,4 +226,227 @@ string *Interpreter::InterpretReturnStatement(ASTNode *returnStatement)
     stack<ASTNode *> dump = *(returnStatement->getNodes());
 
     return InterpretExpression(dump.top());
+}
+
+void Interpreter::InterpretIfStatement(ASTNode *ifStatement)
+{
+    stack<ASTNode *> dump = *(ifStatement->getNodes());
+    ASTNode *firstBlock = dump.top();
+    ASTNode *secondBlock = NULL;
+
+    dump.pop();
+    if (dump.top()->getToken()->type == ELSE)
+    {
+        dump.pop();
+        secondBlock = dump.top();
+        dump.pop();
+    }
+
+    dump.pop();
+
+    ASTNode *expression = dump.top();
+    const char *e = InterpretExpression(expression)->c_str();
+
+    if (strcmp(e, "false") == 0)
+    {
+        if (secondBlock != NULL)
+        {
+            rf->push();
+            InterpretBlock(secondBlock);
+            rf->pop();
+        }
+    }
+    else
+    {
+        rf->push();
+        InterpretBlock(secondBlock);
+        rf->pop();
+    }
+}
+
+void Interpreter::InterpretWhileStatement(ASTNode *whileStatement)
+{
+    stack<ASTNode *> dump = *(whileStatement->getNodes());
+    ASTNode *block = dump.top();
+    dump.pop();
+    dump.pop();
+    string *e = InterpretExpression(dump.top());
+
+    while (strcmp(e->c_str(), "false") != 0)
+    {
+        rf->push();
+        InterpretBlock(block);
+        rf->pop();
+        e = InterpretExpression(dump.top());
+    }
+}
+
+void Interpreter::InterpretFunctionDecl(ASTNode *functionDecl)
+{
+    stack<ASTNode *> dump = *(functionDecl->getNodes());
+    dump.pop();
+    dump.pop();
+    dump.pop();
+    dump.pop();
+    dump.pop();
+    dump.pop();
+    ASTNode *identifier = dump.top();
+    this->functionDefs->insert(pair<string, ASTNode *>(*(identifier->getToken()->value), functionDecl));
+}
+
+string *Interpreter::InterpretFunctionCall(ASTNode *functionCall)
+{
+    stack<ASTNode *> dump = *(functionCall->getNodes());
+    dump.pop();
+    ASTNode *actualParams = dump.top();
+    stack<ASTNode *> ap = *(actualParams->getNodes());
+
+    dump.pop();
+    dump.pop();
+    ASTNode *identifier = dump.top();
+    ASTNode *functionDef = this->functionDefs->at(*(identifier->getToken()->value));
+
+    stack<ASTNode *> dump2 = *(functionDef->getNodes());
+    ASTNode *block = dump2.top();
+    dump2.pop();
+    dump2.pop();
+    dump2.pop();
+    dump2.pop();
+    ASTNode *formalParams = dump.top();
+
+    stack<ASTNode *> fp = *(formalParams->getNodes());
+
+    if (!fp.empty())
+    {
+        rf->push();
+
+        ASTNode *formalParam = fp.top();
+        ASTNode *actualParam = ap.top();
+
+        stack<ASTNode *> dump = *(formalParam->getNodes());
+        dump.pop();
+        dump.pop();
+        ASTNode *identifier = dump.top();
+        string *e = InterpretExpression(actualParam);
+        rf->insert(identifier->getToken(), e);
+
+        fp.pop();
+        ap.pop();
+
+        while (!fp.empty())
+        {
+            fp.pop();
+            ap.pop();
+
+            ASTNode *formalParam = fp.top();
+            ASTNode *actualParam = ap.top();
+
+            stack<ASTNode *> dump = *(formalParam->getNodes());
+            dump.pop();
+            dump.pop();
+            ASTNode *identifier = dump.top();
+            string *e = InterpretExpression(actualParam);
+            rf->insert(identifier->getToken(), e);
+
+            fp.pop();
+            ap.pop();
+        }
+    }
+
+    string *e = InterpretFunctionBlock(block);
+    rf->pop();
+
+    return e;
+}
+
+string *Interpreter::InterpretStatement(ASTNode *statement)
+{
+    stack<ASTNode *> dump = *(statement->getNodes());
+    ASTNode *node = dump.top();
+
+    if(node->getToken()->type == SEMI_COLON)
+    {
+        dump.pop();
+        node = dump.top();
+    }
+
+    switch(node->getToken()->type)
+    {
+        case VARIABLE_DECL:
+        {
+            InterpretVariableDecl(node);
+            return NULL;
+        }
+        case ASSIGNMENT:
+        {
+            InterpretAssignment(node);
+            return NULL;
+        }
+        case PRINT_STATEMENT:
+        {
+            InterpretPrintStatement(node);
+            return NULL;
+        }
+        case IF_STATEMENT:
+        {
+            InterpretIfStatement(node);
+            return NULL;
+        }
+        case WHILE_STATEMENT:
+        {
+            InterpretWhileStatement(node);
+            return NULL;
+        }
+        case RETURN_STATEMENT:
+        {
+            return InterpretReturnStatement(node);
+        }
+        case FUNCTION_DECL:
+        {
+            InterpretFunctionDecl(node);
+            return NULL;
+        }
+        case BLOCK:
+        {
+            InterpretBlock(node);
+            return NULL;
+        }
+    }
+}
+
+void Interpreter::InterpretBlock(ASTNode *block)
+{
+    stack<ASTNode *> dump = *(block->getNodes());
+    dump.pop();
+
+    while(dump.top()->getToken()->type != LEFT_CURLY)
+    {
+        ASTNode *statement = dump.top();
+        InterpretStatement(statement);
+        dump.pop();
+    }
+}
+
+string *Interpreter::InterpretFunctionBlock(ASTNode *block)
+{
+    stack<ASTNode *> dump = *(block->getNodes());
+    dump.pop();
+
+    while(dump.top()->getToken()->type != LEFT_CURLY)
+    {
+        string *e = InterpretStatement(dump.top());
+        if(e != NULL) return e;
+        dump.pop();
+    }
+}
+
+void Interpreter::InterpretProgram(ASTNode *program)
+{
+    stack<ASTNode *> dump = *(program->getNodes());
+
+    while(!dump.empty())
+    {
+        InterpretStatement(dump.top());
+        dump.pop();
+    }
 }

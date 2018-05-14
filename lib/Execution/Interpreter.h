@@ -14,7 +14,7 @@ class Interpreter
 {
   private:
     Reference *rf;
-    map<string, ASTNode *> *functionBlocks;
+    map<string, ASTNode *> *functionDefs;
 
   public:
     Interpreter(ASTNode *program);
@@ -41,7 +41,7 @@ class Interpreter
 
     void InterpretFunctionDecl(ASTNode *functionDecl);
 
-    void InterpretStatement(ASTNode *statment);
+    string *InterpretStatement(ASTNode *statment);
 
     void InterpretBlock(ASTNode *block);
     void InterpretProgram(ASTNode *program);
