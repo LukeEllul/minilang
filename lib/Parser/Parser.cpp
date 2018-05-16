@@ -13,29 +13,14 @@ Parser::Parser(const char *fileName)
 {
     this->lexer = new Lexer(fileName);
     this->currentToken = lexer->NextToken();
-    this->count = 0;
-    this->counting = false;
 }
 
 Token *Parser::nextToken()
 {
-    if (counting)
-        count++;
     currentToken = lexer->NextToken();
     if (currentToken->type == WHITE_SPACE || currentToken->type == NEW_LINE)
         return nextToken();
     return currentToken;
-}
-
-void Parser::backTrack()
-{
-    for (int i = 0; i < count + 1; i++)
-    {
-        this->lexer->goBack();
-    }
-    this->count = 0;
-    this->counting = false;
-    nextToken();
 }
 
 ASTNode *Parser::Fail(Token *token, Token *badToken, ASTNode *fail)
@@ -220,7 +205,9 @@ ASTNode *Parser::ParseFunctionCall()
         return Fail(node->getToken(), currentToken, node);
 
     if(currentToken->type != LEFT_BRACKET)
-        return Fail(node->getToken(), currentToken, node);
+    {
+        return identifier;
+    }
 
     node->pushValue(currentToken->value);
     node->pushNode(new ASTNode(currentToken));
@@ -322,24 +309,10 @@ ASTNode *Parser::ParseFactor()
         n = ParseLiteral();
         break;
     case LETTER:
-        this->counting = true;
         n = ParseFunctionCall();
-        this->counting = false;
-        if (n->fail)
-        {
-            backTrack();
-            n = ParseIdentifier();
-        }
         break;
     case IDENTIFIER:
-        this->counting = true;
         n = ParseFunctionCall();
-        this->counting = false;
-        if (n->fail)
-        {
-            backTrack();
-            n = ParseIdentifier();
-        }
         break;
     case ADDITIVE_OP:
         n = ParseUnary();
@@ -444,12 +417,21 @@ ASTNode *Parser::ParseExpression()
     if (simpleExpression->fail)
         return Fail(node->getToken(), currentToken, node);
 
-    while (currentToken->type == RELATIONAL_OP)
+    while (currentToken->type == RELATIONAL_OP ||
+        currentToken->type == EQUALS ||
+        currentToken->type == EXCLAMATION_MARK)
     {
         node->pushValue(currentToken->value);
         node->pushNode(new ASTNode(currentToken));
 
         nextToken();
+
+        if(currentToken->type == EQUALS)
+        {
+            node->pushValue(currentToken->value);
+            node->pushNode(new ASTNode(currentToken));
+            nextToken();
+        }
 
         ASTNode *simpleExpression = ParseSimpleExpression();
         node->pushValue(simpleExpression->getToken()->value);

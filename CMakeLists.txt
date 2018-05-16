@@ -6,5 +6,7 @@ add_executable(minilang
                     ./lib/Lexer/Lexer.cpp
                     ./lib/Parser/ASTNodes.cpp
                     ./lib/Parser/Parser.cpp
+                    ./lib/Execution/Interpreter.cpp
+                    ./lib/Execution/Reference.cpp
                     ./lib/main.cpp
                     )

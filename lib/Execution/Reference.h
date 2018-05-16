@@ -17,6 +17,7 @@ class Reference
         Reference();
         void push();
         void insert(Token *identifier, string *s);
+        void update(Token *identifier, string *s);
         string *lookup(Token *identifier);
         void pop();
         map<string, string*> *currentScope();

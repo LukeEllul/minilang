@@ -22,6 +22,25 @@ void Reference::insert(Token *identifier, string *s)
     this->scopes->top()->insert(pair<string, string*>(*(identifier->value), s));
 }
 
+void Reference::update(Token *identifier, string *s)
+{
+    stack<map<string, string*> *> dump = *(this->scopes);
+
+    while(!dump.empty())
+    {
+        try
+        {
+            dump.top()->at(*(identifier->value));
+            (*(dump.top()))[*(identifier->value)] = s;
+            return;
+        }
+        catch(const out_of_range &e)
+        {
+            dump.pop();
+        }
+    }
+}
+
 string *Reference::lookup(Token *identifier)
 {
     stack<map<string, string*> *> dump = *(this->scopes);

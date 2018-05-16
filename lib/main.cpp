@@ -5,6 +5,7 @@
 #include "./Lexer/Lexer.h"
 #include "./Parser/Parser.h"
 #include "./Parser/ASTNodes.h"
+#include "./Execution/Interpreter.h"
 
 using namespace std;
 
@@ -22,17 +23,10 @@ int main()
 
     ASTNode *program = parser->ParseProgram();
 
-    cout << program->fail << endl;
-
     cout << *(program->getToken()->value) << endl;
 
-    stack<ASTNode*> *s = program->getNodes();
-
-    cout << s->top()->getNodes()->top()->getNodes()->size() << endl;
-
-    printStack(s->top()->getNodes()->top()->getNodes());
-
-    cout << s->top()->getNodes()->top()->getToken()->type << endl;
+    Interpreter *interpreter = new Interpreter(program);
+    interpreter->InterpretProgram(program);
 
     return 0;
 }

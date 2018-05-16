@@ -12,6 +12,12 @@
 
 using namespace std;
 
+void printThisStack(stack<ASTNode *> *s)
+{
+    for (stack<ASTNode *> dump = *s; !dump.empty(); dump.pop())
+        cout << *(dump.top()->getToken()->value) << endl;
+}
+
 Interpreter::Interpreter(ASTNode *program)
 {
     this->rf = new Reference();
@@ -57,7 +63,7 @@ string *Interpreter::InterpretFactor(ASTNode *factor)
         stack<ASTNode *> dump = *(node->getNodes());
         ASTNode *expression = dump.top();
         string *e = InterpretExpression(expression);
-        return &(new string("-")->append(*e));
+        return &((new string("-"))->append(*e));
     }
 }
 
@@ -77,7 +83,7 @@ string *Interpreter::InterpretTerm(ASTNode *term)
 
         ostringstream strs;
         strs << (n1 * n2);
-        e = &(strs.str());
+        e = new string(strs.str());
 
         dump.pop();
     }
@@ -101,7 +107,7 @@ string *Interpreter::InterpretSimpleExpression(ASTNode *simpleExpression)
 
         ostringstream strs;
         strs << (n1 + n2);
-        e = &(strs.str());
+        e = new string(strs.str());
 
         dump.pop();
     }
@@ -119,11 +125,22 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
     while (!dump.empty())
     {
         ASTNode *relationalOp = dump.top();
-        const char *v = relationalOp->getToken()->value->c_str();
+        string *v = relationalOp->getToken()->value;
         dump.pop();
-        string *n = InterpretSimpleExpression(dump.top());
+        string *n;
+        ASTNode *o = dump.top();
+        if(o->getToken()->type == EQUALS)
+        {
+            v = &(v->append("="));
+            dump.pop();
+            n = InterpretSimpleExpression(dump.top());
+        }
+        else 
+        {
+            n = InterpretSimpleExpression(dump.top());
+        }
 
-        if (strcmp(v, "<") == 0)
+        if (strcmp(v->c_str(), "<") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
@@ -133,7 +150,7 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
             else
                 e = new string("false");
         }
-        if (strcmp(v, ">") == 0)
+        if (strcmp(v->c_str(), ">") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
@@ -143,7 +160,7 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
             else
                 e = new string("false");
         }
-        if (strcmp(v, "<=") == 0)
+        if (strcmp(v->c_str(), "<=") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
@@ -153,7 +170,7 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
             else
                 e = new string("false");
         }
-        if (strcmp(v, ">=") == 0)
+        if (strcmp(v->c_str(), ">=") == 0)
         {
             double n1 = stod(*e);
             double n2 = stod(*n);
@@ -167,14 +184,14 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
         const char *E = e->c_str();
         const char *N = n->c_str();
 
-        if (strcmp(v, "==") == 0)
+        if (strcmp(v->c_str(), "==") == 0)
         {
             if (strcmp(E, N) == 0)
                 e = new string("true");
             else
                 e = new string("false");
         }
-        if (strcmp(v, "!=") == 0)
+        if (strcmp(v->c_str(), "!=") == 0)
         {
             if (strcmp(E, N) == 0)
                 e = new string("false");
@@ -196,7 +213,7 @@ void Interpreter::InterpretAssignment(ASTNode *assignment)
     dump.pop();
     ASTNode *identifier = dump.top();
 
-    rf->insert(identifier->getToken(), e);
+    rf->update(identifier->getToken(), e);
 }
 
 void Interpreter::InterpretVariableDecl(ASTNode *variableDec)
@@ -247,20 +264,22 @@ void Interpreter::InterpretIfStatement(ASTNode *ifStatement)
     ASTNode *expression = dump.top();
     const char *e = InterpretExpression(expression)->c_str();
 
-    if (strcmp(e, "false") == 0)
+    if (strcmp(e, "true") == 0)
     {
-        if (secondBlock != NULL)
-        {
-            rf->push();
+        rf->push();
+        if(secondBlock != NULL)
             InterpretBlock(secondBlock);
-            rf->pop();
-        }
+        else InterpretBlock(firstBlock);
+        rf->pop();
     }
     else
     {
-        rf->push();
-        InterpretBlock(secondBlock);
-        rf->pop();
+        if(secondBlock != NULL)
+        {
+            rf->push();
+            InterpretBlock(firstBlock);
+            rf->pop();
+        }
     }
 }
 
@@ -303,6 +322,7 @@ string *Interpreter::InterpretFunctionCall(ASTNode *functionCall)
 
     dump.pop();
     dump.pop();
+
     ASTNode *identifier = dump.top();
     ASTNode *functionDef = this->functionDefs->at(*(identifier->getToken()->value));
 
@@ -312,7 +332,7 @@ string *Interpreter::InterpretFunctionCall(ASTNode *functionCall)
     dump2.pop();
     dump2.pop();
     dump2.pop();
-    ASTNode *formalParams = dump.top();
+    ASTNode *formalParams = dump2.top();
 
     stack<ASTNode *> fp = *(formalParams->getNodes());
 
@@ -417,36 +437,59 @@ string *Interpreter::InterpretStatement(ASTNode *statement)
 void Interpreter::InterpretBlock(ASTNode *block)
 {
     stack<ASTNode *> dump = *(block->getNodes());
-    dump.pop();
+    stack<ASTNode *> *reverse = new stack<ASTNode *>();
 
-    while(dump.top()->getToken()->type != LEFT_CURLY)
+    while(!dump.empty())
     {
-        ASTNode *statement = dump.top();
-        InterpretStatement(statement);
+        reverse->push(dump.top());
         dump.pop();
+    }
+
+    reverse->pop();
+
+    while(reverse->top()->getToken()->type != RIGHT_CURLY)
+    {
+        ASTNode *statement = reverse->top();
+        InterpretStatement(statement);
+        reverse->pop();
     }
 }
 
 string *Interpreter::InterpretFunctionBlock(ASTNode *block)
 {
     stack<ASTNode *> dump = *(block->getNodes());
-    dump.pop();
+    stack<ASTNode *> *reverse = new stack<ASTNode *>();
 
-    while(dump.top()->getToken()->type != LEFT_CURLY)
+    while(!dump.empty())
     {
-        string *e = InterpretStatement(dump.top());
-        if(e != NULL) return e;
+        reverse->push(dump.top());
         dump.pop();
+    }
+
+    reverse->pop();
+
+    while(reverse->top()->getToken()->type != RIGHT_CURLY)
+    {
+        string *e = InterpretStatement(reverse->top());
+        if(e != NULL) return e;
+        reverse->pop();
     }
 }
 
 void Interpreter::InterpretProgram(ASTNode *program)
 {
     stack<ASTNode *> dump = *(program->getNodes());
+    stack<ASTNode *> *reverse = new stack<ASTNode *>();
 
     while(!dump.empty())
     {
-        InterpretStatement(dump.top());
+        reverse->push(dump.top());
         dump.pop();
+    }
+    
+    while(!reverse->empty())
+    {
+        InterpretStatement(reverse->top());
+        reverse->pop();
     }
 }
