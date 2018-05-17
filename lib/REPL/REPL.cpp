@@ -9,12 +9,18 @@
 
 using namespace std;
 
+void printstack(stack<ASTNode *> *s)
+{
+    for (stack<ASTNode *> dump = *s; !dump.empty(); dump.pop())
+        cout << *(dump.top()->getToken()->value) << endl;
+}
+
 REPL::REPL()
 {
     this->interpreter = new Interpreter();
     Token *token = new Token();
     token->value = new string("ans");
-    this->interpreter->getRef()->firstScope()->insert(pair<string, string*>("ans", NULL));
+    this->interpreter->getRef()->firstScope()->insert(pair<string, string *>("ans", NULL));
 }
 
 void REPL::ReadVariableDecl(ASTNode *variableDecl)
@@ -89,12 +95,21 @@ void REPL::ParseInput(string *input)
 {
     this->parser = new Parser(input);
     ASTNode *program = this->parser->ParseProgram();
-    ASTNode *statement = program->getNodes()->top();
-
-    ReadStatement(statement);
+    if (program->fail)
+    {
+        delete this->parser;
+        this->parser = new Parser(input);
+        ASTNode *expression = this->parser->ParseExpression();
+        ReadExpression(expression);
+    }
+    else
+    {
+        ASTNode *statement = program->getNodes()->top();
+        ReadStatement(statement);
+    }
 }
 
-void REPL::LoadProgram(const char* loc)
+void REPL::LoadProgram(const char *loc)
 {
     this->parser = new Parser(loc);
     ASTNode *program = this->parser->ParseProgram();
@@ -103,7 +118,7 @@ void REPL::LoadProgram(const char* loc)
 
 void REPL::ReadLine(string *input)
 {
-    if(input->substr(0, 5).compare("#load") == 0)
+    if (input->substr(0, 5).compare("#load") == 0)
     {
         LoadProgram(input->substr(7, input->length() - 8).c_str());
     }
@@ -112,7 +127,6 @@ void REPL::ReadLine(string *input)
         ParseInput(input);
     }
 
-    cout << "Ans: " << *(this->ans->value) << endl;
 }
 
 Token *REPL::getAnswer()
