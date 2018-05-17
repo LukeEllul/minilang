@@ -17,7 +17,7 @@ class Interpreter
     map<string, ASTNode *> *functionDefs;
 
   public:
-    Interpreter(ASTNode *program);
+    Interpreter();
 
     string *InterpretFactor(ASTNode *factor);
     string *InterpretTerm(ASTNode *term);
@@ -27,8 +27,8 @@ class Interpreter
     string *InterpretFunctionCall(ASTNode *functionCall);
     string *InterpretFunctionBlock(ASTNode *block);
 
-    void InterpretAssignment(ASTNode *assignment);
-    void InterpretVariableDecl(ASTNode *veriableDecl);
+    string *InterpretAssignment(ASTNode *assignment);
+    string* InterpretVariableDecl(ASTNode *veriableDecl);
     void InterpretPrintStatement(ASTNode *printStatement);
 
     string *InterpretReturnStatement(ASTNode *returnStatement);
@@ -45,6 +45,8 @@ class Interpreter
 
     void InterpretBlock(ASTNode *block);
     void InterpretProgram(ASTNode *program);
+
+    Reference *getRef();
 };
 
 #endif

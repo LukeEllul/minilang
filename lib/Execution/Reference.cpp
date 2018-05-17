@@ -19,14 +19,14 @@ void Reference::push()
 
 void Reference::insert(Token *identifier, string *s)
 {
-    this->scopes->top()->insert(pair<string, string*>(*(identifier->value), s));
+    this->scopes->top()->insert(pair<string, string *>(*(identifier->value), s));
 }
 
 void Reference::update(Token *identifier, string *s)
 {
-    stack<map<string, string*> *> dump = *(this->scopes);
+    stack<map<string, string *> *> dump = *(this->scopes);
 
-    while(!dump.empty())
+    while (!dump.empty())
     {
         try
         {
@@ -34,7 +34,7 @@ void Reference::update(Token *identifier, string *s)
             (*(dump.top()))[*(identifier->value)] = s;
             return;
         }
-        catch(const out_of_range &e)
+        catch (const out_of_range &e)
         {
             dump.pop();
         }
@@ -43,15 +43,15 @@ void Reference::update(Token *identifier, string *s)
 
 string *Reference::lookup(Token *identifier)
 {
-    stack<map<string, string*> *> dump = *(this->scopes);
+    stack<map<string, string *> *> dump = *(this->scopes);
 
-    while(!dump.empty())
+    while (!dump.empty())
     {
         try
         {
             return dump.top()->at(*(identifier->value));
         }
-        catch(const out_of_range &e)
+        catch (const out_of_range &e)
         {
             dump.pop();
         }
@@ -65,7 +65,19 @@ void Reference::pop()
     this->scopes->pop();
 }
 
-map<string, string*> *Reference::currentScope()
+map<string, string *> *Reference::currentScope()
 {
     return this->scopes->top();
+}
+
+map<string, string *> *Reference::firstScope()
+{
+    stack<map<string, string *> *> dump = *(this->scopes);
+    while (true)
+    {
+        map<string, string *> *m = dump.top();
+        dump.pop();
+        if (dump.empty())
+            return m;
+    }
 }

@@ -18,10 +18,15 @@ void printThisStack(stack<ASTNode *> *s)
         cout << *(dump.top()->getToken()->value) << endl;
 }
 
-Interpreter::Interpreter(ASTNode *program)
+Interpreter::Interpreter()
 {
     this->rf = new Reference();
     this->functionDefs = new map<string, ASTNode *>();
+}
+
+Reference *Interpreter::getRef()
+{
+    return this->rf;
 }
 
 string *Interpreter::InterpretFactor(ASTNode *factor)
@@ -205,7 +210,7 @@ string *Interpreter::InterpretExpression(ASTNode *expression)
     return e;
 }
 
-void Interpreter::InterpretAssignment(ASTNode *assignment)
+string *Interpreter::InterpretAssignment(ASTNode *assignment)
 {
     stack<ASTNode *> dump = *(assignment->getNodes());
     string *e = InterpretExpression(dump.top());
@@ -214,9 +219,10 @@ void Interpreter::InterpretAssignment(ASTNode *assignment)
     ASTNode *identifier = dump.top();
 
     rf->update(identifier->getToken(), e);
+    return e;
 }
 
-void Interpreter::InterpretVariableDecl(ASTNode *variableDec)
+string *Interpreter::InterpretVariableDecl(ASTNode *variableDec)
 {
     stack<ASTNode *> dump = *(variableDec->getNodes());
     string *e = InterpretExpression(dump.top());
@@ -228,6 +234,7 @@ void Interpreter::InterpretVariableDecl(ASTNode *variableDec)
     ASTNode *identifier = dump.top();
 
     rf->insert(identifier->getToken(), e);
+    return e;
 }
 
 void Interpreter::InterpretPrintStatement(ASTNode *printStatement)

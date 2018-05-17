@@ -23,6 +23,7 @@ class Lexer
         Token *NextToken();
         void goBack();
         Lexer(const char *filePath);
+        Lexer(string *inputString);
         ~Lexer();
 };
 

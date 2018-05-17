@@ -21,6 +21,8 @@ class Reference
         string *lookup(Token *identifier);
         void pop();
         map<string, string*> *currentScope();
+
+        map<string, string*> *firstScope();
 };
 
 #endif

@@ -15,6 +15,12 @@ Parser::Parser(const char *fileName)
     this->currentToken = lexer->NextToken();
 }
 
+Parser::Parser(string *inputString)
+{
+    this->lexer = new Lexer(inputString);
+    this->currentToken = lexer->NextToken();
+}
+
 Token *Parser::nextToken()
 {
     currentToken = lexer->NextToken();

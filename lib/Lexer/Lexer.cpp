@@ -34,6 +34,17 @@ Lexer::Lexer(const char *fileName)
     this->TransitionTable = TransitionTableX;
 };
 
+Lexer::Lexer(string *inputString)
+{
+    this->inputString = inputString;
+    this->currentPosition = 0;
+    this->end = 0;
+
+    this->ClassifierTable = ClassifierTableX;
+    this->TokenTypeTable = TokenTypeTableX;
+    this->TransitionTable = TransitionTableX;
+}
+
 void Lexer::goBack()
 {
     this->currentPosition--;

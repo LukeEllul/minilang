@@ -20,6 +20,7 @@ class Parser
 
     public:
         Parser(const char *fileName);
+        Parser(string *inputString);
 
         ASTNode *ParseStringLiteral();
         ASTNode *ParseLiteral();
