@@ -22,6 +22,25 @@ void SymbolTable::insert(Token *identifier, TokenType type)
     this->scopes->top()->insert(pair<string, TokenType>(*(identifier->value), type));
 }
 
+void SymbolTable::update(Token *identifier, TokenType type)
+{
+    stack<map<string, TokenType> *> dump = *(this->scopes);
+
+    while (!dump.empty())
+    {
+        try
+        {
+            dump.top()->at(*(identifier->value));
+            (*(dump.top()))[*(identifier->value)] = type;
+            return;
+        }
+        catch (const out_of_range &e)
+        {
+            dump.pop();
+        }
+    }
+}
+
 TokenType SymbolTable::lookup(Token *identifier)
 {
     stack<map<string, TokenType> *> dump = *(this->scopes);

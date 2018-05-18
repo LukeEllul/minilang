@@ -16,6 +16,7 @@ class SymbolTable
     SymbolTable();
     void push();
     void insert(Token *identifier, TokenType type);
+    void update(Token *identifier, TokenType type);
     TokenType lookup(Token *identifier);
     void pop();
     map<string, TokenType> *currentScope();

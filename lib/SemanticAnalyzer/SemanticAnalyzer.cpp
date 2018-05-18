@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stack>
 #include <string>
 #include "../Token.h"
@@ -30,7 +31,7 @@ TokenType SemanticAnalyzer::AnalyzeFactor(ASTNode *factor)
     Token *t = factor->getNodes()->top()->getToken();
     switch(t->type)
     {
-        case LITERAL: return LITERAL;
+        case LITERAL: return factor->getNodes()->top()->getNodes()->top()->getToken()->type;
         case IDENTIFIER:
             {
                 TokenType type = st->lookup(t);
@@ -39,12 +40,11 @@ TokenType SemanticAnalyzer::AnalyzeFactor(ASTNode *factor)
         case FUNCTION_CALL:
         {
             Token *identifier;
-            stack<ASTNode*> dump = *(factor->getNodes());
-            while(!dump.empty())
-            {
-                identifier = dump.top()->getToken();
-                dump.pop();
-            }
+            stack<ASTNode*> dump = *(factor->getNodes()->top()->getNodes());
+            dump.pop();
+            dump.pop();
+            dump.pop();
+            identifier = dump.top()->getToken();
             return st->lookup(identifier);
         }
         case SUB_EXPRESSION:
@@ -187,6 +187,7 @@ bool SemanticAnalyzer::checkVariableDecl(ASTNode *variableDecl)
 
     TokenType expressionType = AnalyzeExpression(expression);
     TokenType typeType = GetType(type->getToken()->value);
+
     if(expressionType != typeType)
         return false;
 
@@ -226,7 +227,7 @@ bool SemanticAnalyzer::checkFunctionDecl(ASTNode *functionDecl)
     }
     st->push();
     checkFormalParams(formalParams);
-    
+
     if(checkBlock(block))
     {
         st->pop();
@@ -358,16 +359,24 @@ bool SemanticAnalyzer::checkFormalParams(ASTNode *formalParams)
 
 bool SemanticAnalyzer::checkBlock(ASTNode *block)
 {
-    stack<ASTNode*> dump = *(block->getNodes());
-    dump.pop();
-    ASTNode *node = dump.top();
+    stack<ASTNode*> reverse = *(block->getNodes());
+    stack<ASTNode*> *dump = new stack<ASTNode*>();
 
-    while(node->getToken()->type != LEFT_CURLY)
+    while(!reverse.empty())
+    {
+        dump->push(reverse.top());
+        reverse.pop();
+    }
+
+    dump->pop();
+    ASTNode *node = dump->top();
+
+    while(node->getToken()->type != RIGHT_CURLY)
     {
         if(!checkStatemant(node))
             return false;
-        dump.pop();
-        node = dump.top();
+        dump->pop();
+        node = dump->top();
     }
 
     return true;
@@ -375,19 +384,27 @@ bool SemanticAnalyzer::checkBlock(ASTNode *block)
 
 bool SemanticAnalyzer::AnalyzeProgram(ASTNode *program)
 {
-    stack<ASTNode*> dump = *(program->getNodes());
-    ASTNode *statement = dump.top();
+    stack<ASTNode*> reverse = *(program->getNodes());
+    stack<ASTNode *> *dump = new stack<ASTNode*>();
+
+    while(!reverse.empty())
+    {
+        dump->push(reverse.top());
+        reverse.pop();
+    }
+
+    ASTNode *statement = dump->top();
     if(!checkStatemant(statement))
         return false;
 
-    dump.pop();
+    dump->pop();
 
-    while(!dump.empty())
+    while(!dump->empty())
     {
-        statement = dump.top();
+        statement = dump->top();
         if(!checkStatemant(statement))
             return false;
-        dump.pop();
+        dump->pop();
     }
 
     return true;

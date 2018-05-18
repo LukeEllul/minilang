@@ -5,6 +5,7 @@
 #include "./Lexer/Lexer.h"
 #include "./Parser/Parser.h"
 #include "./Parser/ASTNodes.h"
+#include "./SemanticAnalyzer/SemanticAnalyzer.h"
 #include "./Execution/Interpreter.h"
 
 using namespace std;
@@ -23,10 +24,14 @@ int main()
 
     ASTNode *program = parser->ParseProgram();
 
+    SemanticAnalyzer *analyzer = new SemanticAnalyzer(program);
+
+    cout << analyzer->AnalyzeProgram(program) << endl;
+
     cout << *(program->getToken()->value) << endl;
 
-    Interpreter *interpreter = new Interpreter(program);
-    interpreter->InterpretProgram(program);
+    // Interpreter *interpreter = new Interpreter();
+    // interpreter->InterpretProgram(program);
 
     return 0;
 }
