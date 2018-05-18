@@ -8,9 +8,8 @@
 
 using namespace std;
 
-SemanticAnalyzer::SemanticAnalyzer(ASTNode *program)
+SemanticAnalyzer::SemanticAnalyzer()
 {
-    this->tree = program;
     this->st = new SymbolTable();
 }
 

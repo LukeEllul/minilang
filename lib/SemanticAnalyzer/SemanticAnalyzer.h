@@ -15,7 +15,7 @@ class SemanticAnalyzer
         SymbolTable *st;
 
     public:
-        SemanticAnalyzer(ASTNode *program);
+        SemanticAnalyzer();
 
         TokenType GetType(string *s);
 

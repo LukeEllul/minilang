@@ -4,6 +4,7 @@
 #include "../Token.h"
 #include "../Parser/Parser.h"
 #include "../Parser/ASTNodes.h"
+#include "../SemanticAnalyzer/SemanticAnalyzer.h"
 #include "../Execution/Interpreter.h"
 #include "REPL.h"
 
@@ -17,6 +18,7 @@ void printstack(stack<ASTNode *> *s)
 
 REPL::REPL()
 {
+    this->analyzer = new SemanticAnalyzer();
     this->interpreter = new Interpreter();
     Token *token = new Token();
     token->value = new string("ans");
@@ -100,11 +102,25 @@ void REPL::ParseInput(string *input)
         delete this->parser;
         this->parser = new Parser(input);
         ASTNode *expression = this->parser->ParseExpression();
+        if (this->analyzer->AnalyzeExpression(expression) == INVALID)
+        {
+            Token *token = new Token();
+            token->value = new string("semantic error/s occured in expression");
+            this->ans = token;
+            return;
+        }
         ReadExpression(expression);
     }
     else
     {
         ASTNode *statement = program->getNodes()->top();
+        if (this->analyzer->checkStatemant(statement) == false)
+        {
+            Token *token = new Token();
+            token->value = new string("semantic error/s occured in expression");
+            this->ans = token;
+            return;
+        }
         ReadStatement(statement);
     }
 }
@@ -113,6 +129,13 @@ void REPL::LoadProgram(const char *loc)
 {
     this->parser = new Parser(loc);
     ASTNode *program = this->parser->ParseProgram();
+    if (this->analyzer->AnalyzeProgram(program) == false)
+    {
+        Token *token = new Token();
+        token->value = new string("semantic error/s found in loaded program");
+        this->ans = token;
+        return;
+    }
     this->interpreter->InterpretProgram(program);
 }
 
@@ -126,7 +149,6 @@ void REPL::ReadLine(string *input)
     {
         ParseInput(input);
     }
-
 }
 
 Token *REPL::getAnswer()

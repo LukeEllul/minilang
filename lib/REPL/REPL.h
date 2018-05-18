@@ -5,6 +5,7 @@
 #include "../Token.h"
 #include "../Parser/Parser.h"
 #include "../Parser/ASTNodes.h"
+#include "../SemanticAnalyzer/SemanticAnalyzer.h"
 #include "../Execution/Interpreter.h"
 
 using namespace std;
@@ -16,6 +17,7 @@ class REPL
         Token* ans;
         
         Parser *parser;
+        SemanticAnalyzer *analyzer;
         Interpreter *interpreter;
 
     public:

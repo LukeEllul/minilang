@@ -24,7 +24,7 @@ int main()
 
     ASTNode *program = parser->ParseProgram();
 
-    SemanticAnalyzer *analyzer = new SemanticAnalyzer(program);
+    SemanticAnalyzer *analyzer = new SemanticAnalyzer();
 
     cout << analyzer->AnalyzeProgram(program) << endl;
 
