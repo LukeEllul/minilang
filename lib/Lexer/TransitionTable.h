@@ -3,7 +3,7 @@
 #include "../Token.h"
 
 const TokenType TransitionTable[][19] = {
-    /*START TODO*/ {
+    /*START */ {
         (TokenType)LETTER, 
         (TokenType)INTEGER_LITERAL, 
         (TokenType)WHITE_SPACE, 
