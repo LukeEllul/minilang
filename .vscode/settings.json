@@ -19,6 +19,7 @@
         "sstream": "cpp",
         "xtree": "cpp",
         "array": "cpp",
-        "initializer_list": "cpp"
+        "initializer_list": "cpp",
+        "istream": "cpp"
     }
 }
