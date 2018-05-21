@@ -18,20 +18,29 @@ void printStack(stack<ASTNode *> *s)
         cout << *(dump.top()->getToken()->value) << endl;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    Parser *parser = new Parser(loc);
+    if (argc < 2)
+    {
+        cout << "Usage: minilang <path to minilang script>" << endl;
+    }
+    else
+    {
+        Parser *parser = new Parser(argv[1]);
 
-    ASTNode *program = parser->ParseProgram();
+        ASTNode *program = parser->ParseProgram();
 
-    SemanticAnalyzer *analyzer = new SemanticAnalyzer();
-
-    cout << analyzer->AnalyzeProgram(program) << endl;
-
-    cout << *(program->getToken()->value) << endl;
-
-    // Interpreter *interpreter = new Interpreter();
-    // interpreter->InterpretProgram(program);
+        SemanticAnalyzer *analyzer = new SemanticAnalyzer();
+        if (!analyzer->AnalyzeProgram(program))
+        {
+            cout << "You have semantic error/s" << endl;
+        }
+        else
+        {
+            Interpreter *interpreter = new Interpreter();
+            interpreter->InterpretProgram(program);
+        }
+    }
 
     return 0;
 }

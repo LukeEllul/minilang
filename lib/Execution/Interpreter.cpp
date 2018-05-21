@@ -81,13 +81,21 @@ string *Interpreter::InterpretTerm(ASTNode *term)
 
     while (!dump.empty())
     {
+        ASTNode *op = dump.top();
         dump.pop();
         string *n = InterpretFactor(dump.top());
         double n1 = stod(*e);
         double n2 = stod(*n);
 
         ostringstream strs;
-        strs << (n1 * n2);
+        if(strcmp(op->getToken()->value->c_str(), "*") == 0)
+        {
+            strs << (n1 * n2);
+        }
+        else
+        {
+            strs << (n2 / n1);
+        }
         e = new string(strs.str());
 
         dump.pop();
@@ -105,13 +113,21 @@ string *Interpreter::InterpretSimpleExpression(ASTNode *simpleExpression)
 
     while (!dump.empty())
     {
+        ASTNode *op = dump.top();
         dump.pop();
         string *n = InterpretTerm(dump.top());
         double n1 = stod(*e);
         double n2 = stod(*n);
 
         ostringstream strs;
-        strs << (n1 + n2);
+        if(strcmp(op->getToken()->value->c_str(), "+") == 0)
+        {
+            strs << (n1 + n2);
+        }
+        else
+        {
+            strs << (n2 - n1);
+        }
         e = new string(strs.str());
 
         dump.pop();
