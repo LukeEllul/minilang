@@ -102,25 +102,25 @@ void REPL::ParseInput(string *input)
         delete this->parser;
         this->parser = new Parser(input);
         ASTNode *expression = this->parser->ParseExpression();
-        if (this->analyzer->AnalyzeExpression(expression) == INVALID)
-        {
-            Token *token = new Token();
-            token->value = new string("semantic error/s occured in expression");
-            this->ans = token;
-            return;
-        }
+        // if (this->analyzer->AnalyzeExpression(expression) == INVALID)
+        // {
+        //     Token *token = new Token();
+        //     token->value = new string("semantic error/s occured in expression");
+        //     this->ans = token;
+        //     return;
+        // }
         ReadExpression(expression);
     }
     else
     {
         ASTNode *statement = program->getNodes()->top();
-        if (this->analyzer->checkStatemant(statement) == false)
-        {
-            Token *token = new Token();
-            token->value = new string("semantic error/s occured in expression");
-            this->ans = token;
-            return;
-        }
+        // if (this->analyzer->checkStatemant(statement) == false)
+        // {
+        //     Token *token = new Token();
+        //     token->value = new string("semantic error/s occured in expression");
+        //     this->ans = token;
+        //     return;
+        // }
         ReadStatement(statement);
     }
 }
